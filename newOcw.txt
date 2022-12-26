@@ -1,0 +1,1202 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta name="generator" content="Hugo 0.104.3" />
+  
+
+
+
+
+<link href="/static/css/course_v2.69060.css" rel="stylesheet">
+
+
+  
+    
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-NMQZ25T');</script>
+    
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  
+
+  <meta name="description" content="This course offers a rigorous treatment of linear algebra, including vector spaces, systems of linear equations, bases, linear independence, matrices, determinants, eigenvalues, inner products, quadratic forms, and canonical forms of matrices. Compared with [_18.06 Linear Algebra_](/courses/18-06sc-linear-algebra-fall-2011/), more emphasis is placed on theory and proofs.">
+  <meta name="keywords" content="opencourseware,MIT OCW,courseware,MIT opencourseware,Free Courses,class notes,class syllabus,class materials,tutorials,online courses,MIT courses">
+  
+  <meta property="og:site_name" content="MIT OpenCourseWare">
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://ocw.mit.edu/courses/18-700-linear-algebra-fall-2013/" />
+  <meta property="og:title" content="Linear Algebra | Mathematics | MIT OpenCourseWare" />
+  <meta property="og:description" content="This course offers a rigorous treatment of linear algebra, including vector spaces, systems of linear equations, bases, linear independence, matrices, determinants, eigenvalues, inner products, quadratic forms, and canonical forms of matrices. Compared with [_18.06 Linear Algebra_](/courses/18-06sc-linear-algebra-fall-2011/), more emphasis is placed on theory and proofs." />
+
+  
+
+
+
+<meta property="og:image" content="/courses/18-700-linear-algebra-fall-2013/6cde8d0d6f20c8b94910655107a062ee_18-700f13.jpg" />
+
+  
+  <link rel="canonical" href="https://ocw.mit.edu/courses/18-700-linear-algebra-fall-2013/" />
+
+  <script type="application/ld+json">
+      {
+        "@context": "http://schema.org/",
+        "@type" : "WebPage",
+        "name": "MIT OpenCourseWare",
+        "description": "This course offers a rigorous treatment of linear algebra, including vector spaces, systems of linear equations, bases, linear independence, matrices, determinants, eigenvalues, inner products, quadratic forms, and canonical forms of matrices. Compared with [_18.06 Linear Algebra_](\/courses\/18-06sc-linear-algebra-fall-2011\/), more emphasis is placed on theory and proofs.",
+        "license": "http://creativecommons.org/licenses/by-nc-sa/4.0/", 
+        "publisher": {
+          "@type": "CollegeOrUniversity",
+          "name": "MIT OpenCourseWare"
+        }
+      }
+  </script>
+
+  <title>Linear Algebra | Mathematics | MIT OpenCourseWare</title>
+  
+  
+
+
+
+
+<link href="/static/css/main.69060.css" rel="stylesheet">
+
+
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,500&display=swap" rel="stylesheet">
+  <style>
+  @font-face {
+    font-family: 'Material Icons';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Material Icons'),
+      local('MaterialIcons-Regular'),
+      url(/static/fonts/MaterialIcons-Regular.woff2) format('woff2'),
+      url(/static/fonts/MaterialIcons-Regular.woff) format('woff'),
+      url(/static/fonts/MaterialIcons-Regular.ttf) format('truetype');
+  }
+  @font-face {
+    font-family: 'Material Icons Round';
+    font-style: normal;
+    font-weight: 400;
+    src: local("MaterialIcons-Round"),
+    url(/static/fonts/MaterialIconsRound-Regular.woff2) format('woff2');
+  }
+  @font-face {
+    font-family: 'Cardo Bold';
+    font-style: normal;
+    font-weight: bold;
+    src: local('Cardo'),
+      local('Cardo-Bold'),
+      url(/static/fonts/Cardo-Bold.ttf) format('truetype');
+  }
+  @font-face {
+    font-family: 'Cardo Italic';
+    font-style: italic;
+    font-weight: 400;
+    src: local('Cardo'),
+      local('Cardo-Italic'),
+      url(/static/fonts/Cardo-Italic.ttf) format('truetype');
+  }
+  @font-face {
+    font-family: 'Helvetica Light';
+    font-style: normal`;
+    font-weight: 400;
+    src: local('Helvetica Light'),
+      local('Helvetica-Light'),
+      url(/static/fonts/Helvetica-Light.ttf) format('truetype');
+  }
+  </style>
+</head>
+
+<body class="course-home-page">
+  
+    
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NMQZ25T"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    
+  
+  
+  <div class="overflow-auto">
+    <div
+  id="mobile-course-nav"
+  class="navbar-offcanvas offcanvas-toggle offcanvas-toggle-close medium-and-below-only drawer">
+  <h3 class="my-4 d-flex align-items-center justify-content-between">
+    Browse Course Material
+    <button
+      class="btn"
+      type="button"
+      aria-label="Close Course Menu"
+      onclick="$('#mobile-course-nav-toggle').click();"
+      >
+      <img
+        src="/images/close_small.svg"
+        alt=""
+        width="12px"
+      />
+    </button>
+  </h3>
+  
+<nav id="course-nav" class="course-nav">
+  <ul class="w-100 m-auto list-unstyled">
+    
+      
+
+
+
+
+<li class="course-nav-list-item">
+  <div class="course-nav-parent d-flex flex-direction-row align-items-center justify-content-between">
+    <span class="course-nav-text-wrapper">
+      <a class="text-dark nav-link"
+        data-uuid="0c431d54-3f7b-50e1-2bdd-0177a1ba8de1"
+        href="/courses/18-700-linear-algebra-fall-2013/pages/syllabus">
+        Syllabus
+      </a>
+    </span>
+    
+  </div>
+  
+  <span class="medium-and-below-only"><hr/></span>
+  
+  <div class="collapse"
+    id="nav-container_0c431d54-3f7b-50e1-2bdd-0177a1ba8de1">
+    <ul class="course-nav-child-nav m-auto">
+      
+    </ul>
+  </div>
+</li>
+
+    
+      
+
+
+
+
+<li class="course-nav-list-item">
+  <div class="course-nav-parent d-flex flex-direction-row align-items-center justify-content-between">
+    <span class="course-nav-text-wrapper">
+      <a class="text-dark nav-link"
+        data-uuid="7abf2b22-19c3-01d5-b3e6-29e458827ea7"
+        href="/courses/18-700-linear-algebra-fall-2013/pages/calendar">
+        Calendar
+      </a>
+    </span>
+    
+  </div>
+  
+  <span class="medium-and-below-only"><hr/></span>
+  
+  <div class="collapse"
+    id="nav-container_7abf2b22-19c3-01d5-b3e6-29e458827ea7">
+    <ul class="course-nav-child-nav m-auto">
+      
+    </ul>
+  </div>
+</li>
+
+    
+      
+
+
+
+
+<li class="course-nav-list-item">
+  <div class="course-nav-parent d-flex flex-direction-row align-items-center justify-content-between">
+    <span class="course-nav-text-wrapper">
+      <a class="text-dark nav-link"
+        data-uuid="6c9c37f5-95f8-b96b-2624-1a1d2462526c"
+        href="/courses/18-700-linear-algebra-fall-2013/pages/readings">
+        Readings
+      </a>
+    </span>
+    
+  </div>
+  
+  <span class="medium-and-below-only"><hr/></span>
+  
+  <div class="collapse"
+    id="nav-container_6c9c37f5-95f8-b96b-2624-1a1d2462526c">
+    <ul class="course-nav-child-nav m-auto">
+      
+    </ul>
+  </div>
+</li>
+
+    
+      
+
+
+
+
+<li class="course-nav-list-item">
+  <div class="course-nav-parent d-flex flex-direction-row align-items-center justify-content-between">
+    <span class="course-nav-text-wrapper">
+      <a class="text-dark nav-link"
+        data-uuid="b0494f2b-51e2-1989-e03b-48e1674e6618"
+        href="/courses/18-700-linear-algebra-fall-2013/pages/assignments">
+        Assignments
+      </a>
+    </span>
+    
+  </div>
+  
+  <span class="medium-and-below-only"><hr/></span>
+  
+  <div class="collapse"
+    id="nav-container_b0494f2b-51e2-1989-e03b-48e1674e6618">
+    <ul class="course-nav-child-nav m-auto">
+      
+    </ul>
+  </div>
+</li>
+
+    
+      
+
+
+
+
+<li class="course-nav-list-item">
+  <div class="course-nav-parent d-flex flex-direction-row align-items-center justify-content-between">
+    <span class="course-nav-text-wrapper">
+      <a class="text-dark nav-link"
+        data-uuid="2a547985-ab53-49f1-e9a3-2502cc44bce5"
+        href="/courses/18-700-linear-algebra-fall-2013/pages/study-materials">
+        Study Materials
+      </a>
+    </span>
+    
+  </div>
+  
+  <span class="medium-and-below-only"><hr/></span>
+  
+  <div class="collapse"
+    id="nav-container_2a547985-ab53-49f1-e9a3-2502cc44bce5">
+    <ul class="course-nav-child-nav m-auto">
+      
+    </ul>
+  </div>
+</li>
+
+    
+  </ul>
+</nav>
+
+</div>
+
+    <div
+  id="course-info-drawer"
+  class="bg-faded pt-3 bg-light navbar-offcanvas navbar-offcanvas-right medium-and-below-only drawer"
+>
+  <div class="col-12">
+    <button
+      class="btn close-mobile-course-info"
+      type="button"
+      aria-label="Close Course Info"
+      onclick="$('#mobile-course-info-toggle').click();"
+      >
+      <img
+        class=""
+        src="/images/close_small.svg"
+        alt=""
+        width="12px"
+      />
+    </button>
+  </div>
+    
+
+<div class="course-info">
+  <div class="course-detail-title bg-light-gray">
+    <div class="d-flex">
+      <div class="font-black py-2 pl-3 m-0">
+        Course Info
+      </div>
+      
+      <button
+        type="button"
+        class="btn close-course-info large-and-above-only"
+        id=""
+        aria-label="Close Course Info"
+        >
+        <img
+          class="toggle navbar-toggle offcanvas-toggle"
+          src="/images/close_small.svg"
+          alt=""
+          width="12px"
+        />
+      </button>
+      
+    </div>
+  </div>
+  <div
+    id="course-info"
+    class="position-relative px-3 mt-4">
+    <div class="row">
+      <div class="col-12 ">
+        
+        <div class="">
+          
+          <div class="panel-course-info-title ">
+            Instructor
+          </div>
+          <div class="course-info-content panel-course-info-text">
+            
+
+
+
+
+<ul class="list-unstyled m-0">
+  
+  
+  
+    
+  
+  <li>
+    <a class="course-info-instructor strip-link-offline"  href="/search?q=David&#43;Vogan">David Vogan</a>
+  </li>
+  
+</ul>
+
+
+          </div>
+        </div>
+         
+        <div class="mt-4">
+          
+          <div class="panel-course-info-title ">
+            Departments
+          </div>
+          <div class="course-info-content panel-course-info-text">
+            
+
+
+
+
+<ul class="list-unstyled m-0">
+  
+  
+  
+    
+  
+  <li>
+    <a class="course-info-department strip-link-offline"  href="/search?d=Mathematics">Mathematics</a>
+  </li>
+  
+</ul>
+
+
+          </div>
+        </div>
+         
+        
+        <div class="mt-4">
+          <div class="panel-course-info-title ">
+            As Taught In
+          </div>
+          <div class="course-info-content panel-course-info-text">
+            Fall
+            
+              2013
+            
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <div class="panel-course-info-title ">
+            Level
+          </div>
+          <div class="course-info-content panel-course-info-text">
+            
+              
+                <a class=" strip-link-offline"  href="/search?l=Undergraduate">Undergraduate</a><br />
+              
+            
+          </div>
+        </div>
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+  
+
+
+
+
+<div class=" mt-4">
+  <div class="panel-course-info-title ">
+    Topics
+  </div>
+  <ul class="list-unstyled pb-2 m-0 panel-course-info-text">
+      <li>
+
+
+
+
+
+
+<div class="position-relative pt-1 pb-1 pl-4 ml-n2 ">
+  
+  <a class="topic-toggle"
+    href="#subtopic-container_0"
+    data-toggle="collapse"
+    aria-controls="subtopic-container_0"
+    aria-expanded="true">
+    <i class="material-icons"></i>
+  </a>
+  
+  <span class="topic-text-wrapper">
+    
+    <a class="text-black course-info-topic strip-link-offline"  href="/search?t=Mathematics">Mathematics</a></span>
+</div>
+
+<div class="pl-4 subtopic-container collapse show" id="subtopic-container_0">
+  
+  
+  
+  <div class="position-relative pt-1 pb-1  pl-2 ">
+    
+    <span class="topic-text-wrapper">
+      
+      <a class="text-black course-info-topic strip-link-offline"  href="/search?t=Linear&#43;Algebra">Linear Algebra</a></span>
+  </div>
+  
+  
+  
+</div>
+
+</li>
+      
+  </ul>
+</div>
+
+  
+
+
+
+<div class="">
+  <div class="course-detail-title panel-course-info-title mt-3">
+    Learning Resource Types
+  </div>
+  <div>
+    <div class="row d-inline m-0">
+      
+        <div class="panel-course-info-text my-2">
+          
+
+<div class="">
+  <div class="d-flex">
+    <i class="material-icons pr-1">assignment</i>
+    <span>Problem Sets</span>
+  </div>
+</div>
+
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+
+  <hr>
+<div class="pb-3">
+  <a class="download-course-link-button btn btn-outline-primary btn-link link-button text-decoration-none px-4 py-2"
+    role="button"
+    href="/courses/18-700-linear-algebra-fall-2013/download">
+    <div class="text-center w-100">Download Course</div>
+  </a>
+</div>
+</div>
+
+    
+
+
+
+
+
+<div id="mobile-header" class="position-relative bg-black medium-and-below-only">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-black d-flex">
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-toggle="collapse"
+      data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <i class="material-icons display-4 text-white align-bottom">menu</i>
+    </button>
+    <div class="mx-auto">
+      
+      <a href="/">
+        <img
+          id="ocw-logo-white" 
+          width="250"
+          src="/images/ocw_logo_white.png"
+          alt="MIT OpenCourseWare"
+        />
+        <img
+        id="ocw-logo-white-v2" 
+        class="d-none"
+        width="250"
+        src="/images/ocw_logo_white_v2.svg"
+        alt="MIT OpenCourseWare"
+      />
+      </a>
+    </div>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto pl-2 pt-2">
+        <li class="nav-item">
+  
+  
+    <a class="nav-link search-icon pr-6" href="/search">
+      <i class="material-icons">search</i>
+    </a>
+  
+</li>
+        <li class="nav-item">
+          <a class="nav-link"  href="https://giving.mit.edu/give/to/ocw/?utm_source=ocw&amp;utm_medium=homepage_banner&amp;utm_campaign=nextgen_home">Give Now</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link"  href="/about">About OCW</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link"  target="_blank"  href="https://mitocw.zendesk.com/hc/en-us">Help &amp; Faqs</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link"  href="/contact">Contact Us</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</div>
+
+
+<div id="desktop-header">
+  <div class="contents">
+    <div class="left">
+      <div class="ocw-logo mr-6">
+        <a href="/">
+          
+          <img id="ocw-logo-white" src="/images/ocw_logo_white.png" alt="MIT OpenCourseWare" />
+          <img class="d-none" id="ocw-logo-white-v2" src="/images/ocw_logo_white_v2.svg" alt="MIT OpenCourseWare" />
+        </a>
+      </div>
+    </div>
+    <div class="right">
+      
+  
+  
+    <a class="nav-link search-icon pr-6" href="/search">
+      <i class="material-icons">search</i>
+    </a>
+  
+
+      <a class="give-button-header font-weight-bold py-2 px-3"  href="https://giving.mit.edu/give/to/ocw/?utm_source=ocw&amp;utm_medium=homepage_banner&amp;utm_campaign=nextgen_home">give now</a>
+      <a class="text-white text-decoration-none font-weight-bold pl-5 pr-3 py-2"  href="/about">about ocw</a>
+      <a class="text-white text-decoration-none font-weight-bold px-3 py-2"  target="_blank"  href="https://mitocw.zendesk.com/hc/en-us">help &amp; faqs</a>
+      <a class="text-white text-decoration-none font-weight-bold px-3 py-2"  href="/contact">contact us</a>
+    </div>
+  </div>
+</div>
+
+    
+
+<div id="course-banner" class="p-0">
+  <div class="max-content-width course-banner-content m-auto py-3">
+    
+    <span class="course-number-term-detail">18.700 | Fall 2013 | Undergraduate</span>
+    <br>
+    <a
+      class="text-capitalize display-4 m-0 text-white"
+      href="/courses/18-700-linear-algebra-fall-2013/"
+    >Linear Algebra</a>
+  </div>
+</div>
+
+
+  <div id="course-main-content">
+    <div class="row">
+      <div class="col-12 course-home-grid">
+        <div class="medium-and-below-only mb-3">
+          <div>
+  <button
+    id="mobile-course-nav-toggle"
+    class="mobile-course-nav-toggle-btn d-inline-flex align-items-center offcanvas-toggle"
+    data-toggle="offcanvas"
+    data-target="#mobile-course-nav"
+  >
+    <img src="/images/expand.svg" alt=""/>
+    <span class="pl-1">Menu</span>
+  </button>
+</div>
+
+        </div>
+      </div>
+    </div>
+    <div class="row course-cards">
+      <div class="col-2 course-home-grid large-and-above-only">  
+        <div class="card">
+  <div class="card-body pr-2">
+    
+<nav id="course-nav" class="course-nav">
+  <ul class="w-100 m-auto list-unstyled">
+    
+      
+
+
+
+
+<li class="course-nav-list-item">
+  <div class="course-nav-parent d-flex flex-direction-row align-items-center justify-content-between">
+    <span class="course-nav-text-wrapper">
+      <a class="text-dark nav-link"
+        data-uuid="0c431d54-3f7b-50e1-2bdd-0177a1ba8de1"
+        href="/courses/18-700-linear-algebra-fall-2013/pages/syllabus">
+        Syllabus
+      </a>
+    </span>
+    
+  </div>
+  
+  <span class="medium-and-below-only"><hr/></span>
+  
+  <div class="collapse"
+    id="nav-container_0c431d54-3f7b-50e1-2bdd-0177a1ba8de1">
+    <ul class="course-nav-child-nav m-auto">
+      
+    </ul>
+  </div>
+</li>
+
+    
+      
+
+
+
+
+<li class="course-nav-list-item">
+  <div class="course-nav-parent d-flex flex-direction-row align-items-center justify-content-between">
+    <span class="course-nav-text-wrapper">
+      <a class="text-dark nav-link"
+        data-uuid="7abf2b22-19c3-01d5-b3e6-29e458827ea7"
+        href="/courses/18-700-linear-algebra-fall-2013/pages/calendar">
+        Calendar
+      </a>
+    </span>
+    
+  </div>
+  
+  <span class="medium-and-below-only"><hr/></span>
+  
+  <div class="collapse"
+    id="nav-container_7abf2b22-19c3-01d5-b3e6-29e458827ea7">
+    <ul class="course-nav-child-nav m-auto">
+      
+    </ul>
+  </div>
+</li>
+
+    
+      
+
+
+
+
+<li class="course-nav-list-item">
+  <div class="course-nav-parent d-flex flex-direction-row align-items-center justify-content-between">
+    <span class="course-nav-text-wrapper">
+      <a class="text-dark nav-link"
+        data-uuid="6c9c37f5-95f8-b96b-2624-1a1d2462526c"
+        href="/courses/18-700-linear-algebra-fall-2013/pages/readings">
+        Readings
+      </a>
+    </span>
+    
+  </div>
+  
+  <span class="medium-and-below-only"><hr/></span>
+  
+  <div class="collapse"
+    id="nav-container_6c9c37f5-95f8-b96b-2624-1a1d2462526c">
+    <ul class="course-nav-child-nav m-auto">
+      
+    </ul>
+  </div>
+</li>
+
+    
+      
+
+
+
+
+<li class="course-nav-list-item">
+  <div class="course-nav-parent d-flex flex-direction-row align-items-center justify-content-between">
+    <span class="course-nav-text-wrapper">
+      <a class="text-dark nav-link"
+        data-uuid="b0494f2b-51e2-1989-e03b-48e1674e6618"
+        href="/courses/18-700-linear-algebra-fall-2013/pages/assignments">
+        Assignments
+      </a>
+    </span>
+    
+  </div>
+  
+  <span class="medium-and-below-only"><hr/></span>
+  
+  <div class="collapse"
+    id="nav-container_b0494f2b-51e2-1989-e03b-48e1674e6618">
+    <ul class="course-nav-child-nav m-auto">
+      
+    </ul>
+  </div>
+</li>
+
+    
+      
+
+
+
+
+<li class="course-nav-list-item">
+  <div class="course-nav-parent d-flex flex-direction-row align-items-center justify-content-between">
+    <span class="course-nav-text-wrapper">
+      <a class="text-dark nav-link"
+        data-uuid="2a547985-ab53-49f1-e9a3-2502cc44bce5"
+        href="/courses/18-700-linear-algebra-fall-2013/pages/study-materials">
+        Study Materials
+      </a>
+    </span>
+    
+  </div>
+  
+  <span class="medium-and-below-only"><hr/></span>
+  
+  <div class="collapse"
+    id="nav-container_2a547985-ab53-49f1-e9a3-2502cc44bce5">
+    <ul class="course-nav-child-nav m-auto">
+      
+    </ul>
+  </div>
+</li>
+
+    
+  </ul>
+</nav>
+
+  </div>
+</div>
+
+      </div>
+      <div class="col-12 col-md-8 col-lg-7 course-home-grid">
+        <div class="card">
+  <div class="card-body">
+    <section class="course-detail-section">
+      
+
+
+  
+
+<div id="course-description">
+  <div class="course-detail-title">
+    Course Description
+  </div>
+  
+  <div id="collapsed-description" class="description">This course offers a rigorous treatment of linear algebra, including vector spaces, systems of linear equations, bases, linear independence, matrices, determinants, eigenvalues, inner products, quadratic forms, and canonical forms of matrices. Compared with [_18.06 Linear …<button id="expand-description" type="button" class="btn btn-link link-button p-0">Show more</button></div>
+  <div id="expanded-description" class="description d-none">This course offers a rigorous treatment of linear algebra, including vector spaces, systems of linear equations, bases, linear independence, matrices, determinants, eigenvalues, inner products, quadratic forms, and canonical forms of matrices. Compared with <a href="/courses/18-06sc-linear-algebra-fall-2011/"><em>18.06 Linear Algebra</em></a>, more emphasis is placed on theory and proofs.<button id="collapse-description" type="button" class="btn btn-link link-button p-0">Show less</button></div>
+  
+</div>
+
+    </section>
+
+    <section class="course-detail-section">
+        
+
+<div class="course-info">
+  <div class="course-detail-title ">
+    <div class="d-flex">
+      <div class="font-black ">
+        Course Info
+      </div>
+      
+    </div>
+  </div>
+  <div
+    id="course-info"
+    class="position-relative ">
+    <div class="row">
+      <div class="col-12 col-sm-6">
+        
+        <div class="">
+          
+          <div class=" text-muted ">
+            Instructor
+          </div>
+          <div class="course-info-content ">
+            
+
+
+
+
+<ul class="list-unstyled m-0">
+  
+  
+  
+    
+  
+  <li>
+    <a class="course-info-instructor strip-link-offline"  href="/search?q=David&#43;Vogan">David Vogan</a>
+  </li>
+  
+</ul>
+
+
+          </div>
+        </div>
+         
+        <div class="mt-4">
+          
+          <div class=" text-muted ">
+            Departments
+          </div>
+          <div class="course-info-content ">
+            
+
+
+
+
+<ul class="list-unstyled m-0">
+  
+  
+  
+    
+  
+  <li>
+    <a class="course-info-department strip-link-offline"  href="/search?d=Mathematics">Mathematics</a>
+  </li>
+  
+</ul>
+
+
+          </div>
+        </div>
+         
+        
+      </div>
+
+      
+      <div class="col-12 col-sm-6">
+        <div class="mt-4 mt-sm-0">
+          
+
+
+
+
+<div class=" ">
+  <div class=" text-muted ">
+    Topics
+  </div>
+  <ul class="list-unstyled pb-2 m-0 ">
+      <li>
+
+
+
+
+
+
+<div class="position-relative pt-1 pb-1 pl-4 ml-n2 ">
+  
+  <a class="topic-toggle"
+    href="#subtopic-container_0"
+    data-toggle="collapse"
+    aria-controls="subtopic-container_0"
+    aria-expanded="true">
+    <i class="material-icons"></i>
+  </a>
+  
+  <span class="topic-text-wrapper">
+    
+    <a class="text-black course-info-topic strip-link-offline"  href="/search?t=Mathematics">Mathematics</a></span>
+</div>
+
+<div class="pl-4 subtopic-container collapse show" id="subtopic-container_0">
+  
+  
+  
+  <div class="position-relative pt-1 pb-1  pl-2 ">
+    
+    <span class="topic-text-wrapper">
+      
+      <a class="text-black course-info-topic strip-link-offline"  href="/search?t=Linear&#43;Algebra">Linear Algebra</a></span>
+  </div>
+  
+  
+  
+</div>
+
+</li>
+      
+  </ul>
+</div>
+
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+    </section>
+
+    <section class="course-detail-section">
+      
+
+
+
+<div class="">
+  <div class="course-detail-title ">
+    Learning Resource Types
+  </div>
+  <div>
+    <div class="row ">
+      
+        <div class=" m-2 ">
+          
+
+<div class="learning-resource-type-item">
+  <div class="d-flex">
+    <i class="material-icons pr-1">assignment</i>
+    <span>Problem Sets</span>
+  </div>
+</div>
+
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+
+    </section>
+  </div>
+</div>
+
+      </div>
+      <div class="col-12 col-md-4 col-lg-3 mb-3 mb-md-0 course-home-grid">
+        <div class="card">
+  <div class="card-body">
+    <div class="course-image-section-container">
+      <div class="course-image-container">
+        <div class="d-flex flex-column">
+          <img class="course-image" src="/courses/18-700-linear-algebra-fall-2013/6cde8d0d6f20c8b94910655107a062ee_18-700f13.jpg"
+            alt="A set of orthogonal vectors in an inner product space."
+          />
+        </div>
+        <div class="course-image-caption">
+          <span>Gram–Schmidt process which is a method for orthonormalising a set of vectors in an inner product space. (Image from public domain.)</span>
+        </div>
+      </div>
+      <div>
+        <hr>
+<div class="pb-3">
+  <a class="download-course-link-button btn btn-outline-primary btn-link link-button text-decoration-none px-4 py-2"
+    role="button"
+    href="/courses/18-700-linear-algebra-fall-2013/download">
+    <div class="text-center w-100">Download Course</div>
+  </a>
+</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      </div>
+    </div>
+  </div>
+  
+  
+<div class="footer">
+    <div class="footer-main-content mx-auto">
+    	<div class="col-12">
+        	<div class="row align-items-center">
+            	<div class="col-12 col-md-9">
+					<div class="d-md-flex align-items-center">
+						<a href="https://openlearning.mit.edu/" target="_blank">
+							<img width="150px" src="/images/mit-ol.png" alt="MIT Open Learning" />
+						</a>
+						<div class="ml-md-3 mt-4 mt-md-0">
+							<div class="font-weight-bold">
+								Over 2,500 courses & materials
+							</div>
+							<div>
+								Freely sharing knowledge with learners and educators around the world. <a href='/about'>Learn more</a>
+							</div>
+						</div>
+					</div>
+            	</div>
+				<div class="col-12 col-md-3 d-none d-md-block">
+					<div class="d-flex justify-content-md-end">
+	<div>
+		<a href="https://www.facebook.com/MITOCW" target="_blank">
+			<img class="footer-social-icon ml-0" src="/images/Facebook.png" alt="facebook"/>
+		</a>
+	</div>
+	<div>
+		<a href="https://www.instagram.com/mitocw" target="_blank">
+			<img class="footer-social-icon" src="/images/Instagram.png" alt="instagram"/>
+		</a>
+	</div>
+	<div>
+		<a href="https://twitter.com/MITOCW" target="_blank">
+			<img class="footer-social-icon" src="/images/Twitter.png" alt="twitter"/>
+		</a>
+	</div>
+	<div>
+		<a href="https://www.youtube.com/mitocw" target="_blank">
+			<img class="footer-social-icon" src="/images/Youtube.png" alt="youtube"/>
+		</a>
+	</div>
+	<div>
+		<a href="https://www.linkedin.com/company/mit-opencourseware/" target="_blank">
+			<img class="footer-social-icon" src="/images/LinkedIn.png" alt="LinkedIn"/>
+		</a>
+	</div>
+</div>
+				</div>
+        	</div>
+    	</div>
+		
+		<div class="col-12 mt-3 mt-md-4">
+			<div class="row align-items-center">
+            	<div class="col-12 col-md-8">
+					<div class="d-lg-flex">
+						<div class="pr-md-2 mt-2 mt-lg-0 d-none d-lg-block">
+							© 2001–2022 Massachusetts Institute of Technology
+						</div>
+						<div class="px-md-2 mt-2 mt-lg-0">
+							<a href="https://accessibility.mit.edu" target="_blank">Accessibility</a>
+						</div>
+						<div class="px-md-2 mt-2 mt-lg-0">
+							<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">Creative Commons License</a>
+						</div>
+						<div class="px-md-2 mt-2 mt-lg-0">
+							<a class="hide-offline" href='/pages/privacy-and-terms-of-use/'>Terms and Conditions</a>
+						</div>
+					</div>
+            	</div>
+				<div class="col-12 col-md-4">
+					<div class="d-flex justify-content-md-end mt-4 mt-lg-0">
+						<div>
+						Proud member of: 
+						<a href="https://www.oeglobal.org/" target="_blank">
+							<img class="oeg-logo" src="/images/oeg_logo.png" alt="Open Education Global"/>
+						</a>
+						</div>
+					</div>
+				</div>
+        	</div>
+		</div>
+
+		<div class="col-12 mt-5 d-md-none">
+			<div class="d-flex justify-content-md-end">
+	<div>
+		<a href="https://www.facebook.com/MITOCW" target="_blank">
+			<img class="footer-social-icon ml-0" src="/images/Facebook.png" alt="facebook"/>
+		</a>
+	</div>
+	<div>
+		<a href="https://www.instagram.com/mitocw" target="_blank">
+			<img class="footer-social-icon" src="/images/Instagram.png" alt="instagram"/>
+		</a>
+	</div>
+	<div>
+		<a href="https://twitter.com/MITOCW" target="_blank">
+			<img class="footer-social-icon" src="/images/Twitter.png" alt="twitter"/>
+		</a>
+	</div>
+	<div>
+		<a href="https://www.youtube.com/mitocw" target="_blank">
+			<img class="footer-social-icon" src="/images/Youtube.png" alt="youtube"/>
+		</a>
+	</div>
+	<div>
+		<a href="https://www.linkedin.com/company/mit-opencourseware/" target="_blank">
+			<img class="footer-social-icon" src="/images/LinkedIn.png" alt="LinkedIn"/>
+		</a>
+	</div>
+</div>
+		</div>
+
+		<div class="col-12 mt-4 pl-3 pl-md-4 d-lg-none">
+			© 2001–2022 Massachusetts Institute of Technology
+		</div>
+	</div>
+</div>
+
+  <script>
+function hideLinksOffline(){
+  if (!window.navigator.onLine) {
+    const stripLinks = document.querySelectorAll(".strip-link-offline")
+    const hideOffline = document.querySelectorAll(".hide-offline")
+    const showOffline = document.querySelectorAll(".show-offline")
+    Array.prototype.forEach.call(stripLinks, function(link) {
+      link.outerHTML = link.innerHTML
+    })
+    Array.prototype.forEach.call(hideOffline, function(link) {
+      link.classList.add("d-none")
+    })
+    Array.prototype.forEach.call(showOffline, function(link) {
+      link.classList.remove("d-none")
+    })
+  }
+}
+hideLinksOffline()
+</script>
+
+  </div>
+  
+
+<script>
+function expandNav(e,t){t.classList.add("show"),e.querySelector(".course-nav-section-toggle, video-tab-toggle-section").setAttribute("aria-expanded","true")}function courseNav(){document.querySelectorAll(".course-nav, .transcript-header").forEach(e=>{e.querySelectorAll(".nav-link").forEach(e=>{const t=e.getAttribute("href")?e.getAttribute("href"):"";if(t.replace(/\/$/,"")===window.location.pathname.replace(/\/$/,"")){e.classList.add("active");const s=e.dataset.uuid,t=e.closest(".course-nav-list-item"),n=t?.querySelector(".collapse"),o=Array.prototype.filter.call(document.querySelectorAll(".course-nav-section-toggle"),e=>e.dataset.uuid===s);t&&n&&o.length>0&&expandNav(t,n)}});const t=e.querySelector("a.nav-link.active");e.querySelectorAll(".course-nav-list-item").forEach(e=>{const n=e.querySelector(".collapse");n&&n.contains(t)&&expandNav(e,n)})})}courseNav()
+</script>
+
+  
+
+<script>
+(()=>{var e=()=>document.querySelectorAll("#course-content-section table"),t=()=>document.getElementById("course-content-section");function n(){const o=e(),n=t();if(!n)return;if(!window.ResizeObserver)return;const i=new ResizeObserver(()=>s());i.observe(n),o.forEach(e=>{const t=e.getElementsByTagName("th"),n=e.querySelectorAll("table tr");n.forEach(e=>{const n=e.querySelectorAll("td");n.forEach((e,s)=>{t.length>=s+1&&(n[s].dataset.title=t[s].innerText.trim().concat(": "))})})})}function s(){const s=e(),n=t();if(!n)return;s.forEach(e=>{const t=n.getBoundingClientRect(),o=+(e.dataset.minWidth??0);t.width>o&&e.classList.remove("mobile-table");const s=e.getBoundingClientRect();s.right>t.right&&(e.dataset.minWidth=`${s.width}`,e.classList.add("mobile-table"))})}n()})()
+</script>
+
+
+
+
+
+<script src="/static/js/main.69060.js"></script>
+
+
+  
+
+
+
+
+<script src="/static/js/course_v2.69060.js"></script>
+
+
+  
+
+  
+
+  <script async src="https://w.appzi.io/w.js?token=Tgs1d"></script>
+
+  
+</body>
+
+</html>
+
