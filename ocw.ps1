@@ -6,13 +6,13 @@
 function Show-Error($msg){
     Write-Host $msg -ForegroundColor DarkRed
 }
+#shows the details of the course
 function Get-Details{
-    #shows the details of the course
     $titlePattern = '<title>(?<title>.*)</title>'
    
     if($webResponse.Content -match $titlePattern){ 
         $titleName = $Matches.title -split "\|" #split expects a RE
-        Write-Host "▶️Course Name:" $titleName[0]
+        Write-Host "▶️Title:" $titleName[0]
         
     } else {
         Show-Error("Title Not Found")
@@ -29,12 +29,13 @@ function Get-Details{
     $otherPattern = '<span class="course-number-term-detail">(?<other>.*)</span>'
     if($webResponse.Content -match $otherPattern){ 
         $otherDetails = $Matches.other -split "\|"
-        Write-Host "▶️Course ID:" $otherDetails[0]
-        Write-Host "▶️Course Semester:" $otherDetails[1]
-        Write-Host "▶️Course Level:" $otherDetails[2]
+        Write-Host "▶️ID:" $otherDetails[0].Trim()
+        Write-Host "▶️Semester:" $otherDetails[1].Trim()
+        Write-Host "▶️Level:" $otherDetails[2].Trim()
     }
 }
 
+# driver
 $link =  Read-Host "Enter the OCW url"
 if ($link -match 'https://ocw\.mit\.edu/courses') {
     try{   
