@@ -61,6 +61,7 @@ function Get-Resources {
     }
 }
 
+
 # Gets the input from the user
 function Get-Response($index, $res) {
     Write-Host "Enter the index/indices of desired resource for download (Enter A for all):" -ForegroundColor Cyan
@@ -96,11 +97,40 @@ function Get-LVideos {
         # Thanks to Emanuel Palm -> "https://pipe.how/invoke-webscrape/#parsing-data"
         $AllMatches = ($basePage.Content | Select-String '<a href="(?<downloadLink>.*)" target="_blank" download>' -AllMatches).Matches
         $downloadLinksList = ($AllMatches.Groups.Where{ $_.Name -like 'downloadLink' }).Value
-        Write-Host $downloadLinksList[0..2]
+        $files = @()
+        New-Item -Path ($downloadPath + '\LVideos') -ItemType Directory 
+        $downloadPath = $downloadPath + '\LVideos'
+        foreach ($downloadLink in $downloadLinksList) {
+            # we want parallel downloads
+            $files += @{
+                Uri     = $downloadLink
+                outFile = $downloadPath + '\' + ($downloadLink -split '/')[5]
+            }
+        }
+        
+        $jobs = @()
+
+        foreach ($file in $files) {
+            $jobs += Start-ThreadJob -Name $file.OutFile -ScriptBlock {
+                $params = $using:file
+                Invoke-WebRequest @params
+            }
+        }
+
+        Write-Host "Downloads started..."
+        Wait-Job -Job $jobs
+
+        foreach ($job in $jobs) {
+            Receive-Job -Job $job
+        }
     }
     catch {
-        Show-Error('error here')
+        Show-Error('Error in downloading Lecture Videos')
     }
+}
+
+function Get-Assignments {
+    
 }
 # driver
 $link = Read-Host "Enter the OCW url"
@@ -111,6 +141,7 @@ if ($link -match 'https://ocw\.mit\.edu/courses') {
         Write-Host "⚡Course Found" -ForegroundColor DarkGreen #make this more useful
         Write-Host ":::::::::::::::::::::::::::::::::::"
         Get-Details
+        $downloadPath = Read-Host "Enter download path"
         Get-LVideos
         # Get-Resources
     }
