@@ -42,40 +42,64 @@ function Get-Resources {
         Write-Host "::::::::::::::::::::::::::::::::"
         Write-Host "⚡Resources Available" -ForegroundColor Green
         Write-Host "::::::::::::::::::::::::::::::::"
-        # $lectureVideoAvailable = $downloadPage.Content -match 'Lecture Videos'
-        # $assignmentsAvailable = $downloadPage.Content -match 'Assignments'
-        # $examsAvailable = $downloadPage.Content -match 'Exams'
-        # $lectureNotesAvailable = $downloadPage.Content -match 'Lecture Notes'
-        
+        # resource array
+        $resources = 1..4
         $keys = 'Lecture Videos', 'Assignments', 'Exams', 'Lecture Notes'
         $index = 0
         foreach ($key in $keys) {
             if ($downloadPage.Content -match $key) {
                 Write-Host $index $key
+                $resources[$index] = $key
                 $index += 1
             }
         }
-        Get-Response($index)
+        Get-Response($index, $resources)
     }
     catch {
         $StatusCode = $_.Exception.Response.StatusCode.value__
-        Write-Host "Error: Exited with error code in download" $StatusCode -ForegroundColor Red        
+        Write-Host "Error: Exited with error code in download" $StatusCode -ForegroundColor Red      
     }
 }
 
 # Gets the input from the user
-function Get-Response($index) {
+function Get-Response($index, $res) {
     Write-Host "Enter the index/indices of desired resource for download (Enter A for all):" -ForegroundColor Cyan
     Write-Host "Example: 2,3,1" -ForegroundColor DarkBlue
     $userInputs = Read-Host "➡️"
     $userInputs = $userInputs -split ','
     Write-Host $userInputs
     # input sanity check
-    foreach ($userInput in $userInputs) { 
-        if (($userInput -gt $index) -or ($input -le 0)) {
-            Show-Error("Index " + $userInput + " does not exist.")
-            Get-Response($index)
+    foreach ($userInput in $userInputs) {
+        if ($userInput -eq 'A' -or $userInput -eq 'a') {
+            Write-Host "Download all"
+        } 
+        else {
+            if (($userInput -gt $index) -or ($input -le 0)) {
+                Show-Error("Index " + $userInput + " does not exist.")
+                Get-Response($index, $res)
+            }
         }
+    }
+}
+# function Download-Resource() {
+#     # break this into smaller modules
+#     # Download-LVideos
+#     # Download-Assignments
+#     # Download-Exams
+#     # Download-LNotes
+# }
+
+function Get-LVideos {
+    $baseUri = ($link + 'resources/lecture-videos/').Trim()
+    try {
+        $basePage = Invoke-WebRequest -Uri $baseUri
+        # Thanks to Emanuel Palm -> "https://pipe.how/invoke-webscrape/#parsing-data"
+        $AllMatches = ($basePage.Content | Select-String '<a href="(?<downloadLink>.*)" target="_blank" download>' -AllMatches).Matches
+        $downloadLinksList = ($AllMatches.Groups.Where{ $_.Name -like 'downloadLink' }).Value
+        Write-Host $downloadLinksList[0..2]
+    }
+    catch {
+        Show-Error('error here')
     }
 }
 # driver
@@ -87,7 +111,8 @@ if ($link -match 'https://ocw\.mit\.edu/courses') {
         Write-Host "⚡Course Found" -ForegroundColor DarkGreen #make this more useful
         Write-Host ":::::::::::::::::::::::::::::::::::"
         Get-Details
-        Get-Resources
+        Get-LVideos
+        # Get-Resources
     }
     catch {
         $StatusCode = $_.Exception.Response.StatusCode.value__
