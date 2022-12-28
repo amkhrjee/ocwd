@@ -63,12 +63,12 @@ function Show-Resources {
 }
 
 # Gets the input from the user
-function Get-Path {
-    Write-Host "Enter the download path: " -ForegroundColor Cyan
-    Write-Host "Example: C:\Users\john\OneDrive\Desktop" -ForegroundColor DarkCyan
-    $downloadPath = Read-Host "➡️"
-    return $downloadPath
-}
+# function Get-Path {
+#     Write-Host "Enter the download path: " -ForegroundColor Cyan
+#     Write-Host "Example: C:\Users\john\OneDrive\Desktop" -ForegroundColor DarkCyan
+#     $downloadPath = Read-Host "➡️"
+#     return $downloadPath
+# }
 
 function Get-Response() {
     Write-Host "Enter the index of the desired resource for download"  -ForegroundColor Cyan
@@ -77,8 +77,10 @@ function Get-Response() {
     Write-Host "🪶 Example: 1,2"
     $userInputs = Read-Host "➡️"
     $target = Confirm-Response($userInputs)
-    $downloadPath = Get-Path
-    Import-Resoruces($target, $downloadPath)
+    Write-Host "Enter the download path: " -ForegroundColor Cyan
+    Write-Host "Example: C:\Users\john\OneDrive\Desktop" -ForegroundColor DarkCyan
+    $downloadPath = Read-Host "➡️"
+    Import-Resoruces $target $downloadPath
 }
 
 function Confirm-Response($userInputs) {
@@ -116,46 +118,6 @@ function Confirm-Response($userInputs) {
     }
 }
 
-function Import-Resoruces($target, $downloadPath) {
-    if ($target -eq 999) {
-        # download everything that is in the resList
-        foreach ($res in $resList) {
-            switch ($res) {
-                'Lecture Videos' {
-                    Write-Host "Download Lecture Videos"
-                }
-                'Assignments' {
-                    Write-Host "Download Assignments"
-                }
-                'Exams' {
-                    Write-Host "Download Exams"
-                }
-                'Lecture Notes' {
-                    Write-Host "Download Lecture Notes"
-                }
-            }
-        }
-    }
-    else {
-        foreach ($index in $target) {
-            switch ($resList[$index]) {
-                'Lecture Videos' {
-                    Write-Host "Download Lecture Videos"
-                }
-                'Assignments' {
-                    Write-Host "Download Assignments"
-                }
-                'Exams' {
-                    Write-Host "Exams"
-                }
-                'Lecture Notes' {
-                    Write-Host "Download Lecture Notes"
-                }
-            
-            }
-        }
-    }
-}
 
 
 function Get-Files($baseUri, $dirName, $downloadPath) {
@@ -163,17 +125,25 @@ function Get-Files($baseUri, $dirName, $downloadPath) {
     # Thanks to Emanuel Palm -> "https://pipe.how/invoke-webscrape/#parsing-data"
     $AllMatches = ($basePage.Content | Select-String '<a href="(?<downloadLink>.*)" target="_blank" download>' -AllMatches).Matches
     $downloadLinksList = ($AllMatches.Groups.Where{ $_.Name -like 'downloadLink' }).Value
+    
+    # Write-Host $downloadLinksList
     $files = @()
     New-Item -Path ($downloadPath + $dirName) -ItemType Directory 
     $downloadPath = $downloadPath + $dirName
     foreach ($downloadLink in $downloadLinksList) {
+        if ($downloadLink -match '/courses/') {
+            $downloadLink = 'https://ocw.mit.edu' + $downloadLink
+        }
         $files += @{
             Uri     = $downloadLink
             outFile = $downloadPath + '\' + ($downloadLink -split '/')[5]
         }
     }
-        
     $jobs = @()
+
+    # foreach ($file in $files) {
+    #     Write-Host $file
+    # }
 
     foreach ($file in $files) {
         $jobs += Start-ThreadJob -Name $file.OutFile -ScriptBlock {
@@ -182,7 +152,7 @@ function Get-Files($baseUri, $dirName, $downloadPath) {
         }
     }
 
-    Write-Host ($dirName -split '\')[1] "Downloads started..."
+    Write-Host ($dirName -split '\\')[1] "downloads started..." -ForegroundColor DarkYellow
     Wait-Job -Job $jobs
 
     foreach ($job in $jobs) {
@@ -192,7 +162,7 @@ function Get-Files($baseUri, $dirName, $downloadPath) {
 }
 function Get-LVideos($downloadPath) {
     try {
-        Get-Files($link + 'resources/lecture-videos/', '\LVideos', $downloadPath)
+        Get-Files ($link + 'resources/lecture-videos/') '\LVideos' $downloadPath
     }
     catch {
         Show-Error("Error in dowloading Lecture Videos")
@@ -200,7 +170,7 @@ function Get-LVideos($downloadPath) {
 }
 function Get-Assignments($downloadPath) {
     try {
-        Get-Files($link + 'resources/assignments/', '\Assignments', $downloadPath)
+        Get-Files ($link + 'resources/assignments/') '\Assignments' $downloadPath
     }
     catch {
         Show-Error("Error in downloading Assignments")
@@ -208,7 +178,7 @@ function Get-Assignments($downloadPath) {
 }
 function Get-Exams($downloadPath) {
     try {
-        Get-Files($link + 'resources/exams/', '\Exams', $downloadPath)
+        Get-Files ($link + 'resources/exams/') '\Exams' $downloadPath
     }
     catch {
         Show-Error("Error in downloading Exams")
@@ -216,12 +186,61 @@ function Get-Exams($downloadPath) {
 }
 function Get-LNotes($downloadPath) {
     try {
-        Get-Files($link + 'resources/lecture-notes/', '\LNotes', $downloadPath)
+        Get-Files ($link + 'resources/lecture-notes/') '\LNotes' $downloadPath
     }
     catch {
         Show-Error('Error in downloading LNotes')
     }
 } 
+
+
+function Import-Resoruces($target, $downloadPath) {
+    if ($target -eq 999) {
+        # download everything that is in the resList
+        foreach ($res in $resList) {
+            switch ($res) {
+                'Lecture Videos' {
+                    Write-Host "Downloading Lecture Videos..." -ForegroundColor Yellow
+                    Get-LVideos($downloadPath)
+                }
+                'Assignments' {
+                    Get-Assignments($downloadPath)
+                }
+                'Exams' {
+                    Write-Host "Downloading Exams..." -ForegroundColor Yellow
+                    Get-Exams($downloadPath)
+                }
+                'Lecture Notes' {
+                    Write-Host "Download Lecture Notes..." -ForegroundColor Yellow
+                    Get-LNotes($downloadPath)
+                }
+            }
+        }
+    }
+    else {
+        foreach ($index in $target) {
+            switch ($resList[$index]) {
+                'Lecture Videos' {
+                    Write-Host "Downloading Lecture Videos..." -ForegroundColor Yellow
+                    Get-LVideos($downloadPath)
+                }
+                'Assignments' {
+                    Write-Host "Downloading Assignments..." -ForegroundColor Yellow
+                    Get-Assignments($downloadPath)
+                }
+                'Exams' {
+                    Write-Host "Downloading Exams..." -ForegroundColor Yellow
+                    Get-Exams($downloadPath)
+                }
+                'Lecture Notes' {
+                    Write-Host "Downloadng Lecture Notes..." -ForegroundColor Yellow
+                    Get-LNotes($downloadPath)
+                }
+            }
+        }
+    }
+}
+
 # driver
 $link = Read-Host "Enter the OCW url"
 $link = $link.Trim()
