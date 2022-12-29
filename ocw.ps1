@@ -9,7 +9,8 @@
     ocwd https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/
 .NOTES
     Author: Aniruddha Mukherjee
-    Date:   Dec 30, 2022
+    Creation Date:   Dec 30, 2022
+    Version: 1.0.0
 #>
 Param(
     [Parameter(Mandatory, HelpMessage = "The URL to a course homepage")]
