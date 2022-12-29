@@ -8,12 +8,26 @@
 .EXAMPLE
     ocwd https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/
 .NOTES
-    Author: Aniruddha Mukherjee
-    Creation Date:   Dec 30, 2022
+    Creation Date: Dec 30, 2022
     Version: 1.0.0
+
+    Copyright (C) 2022  Aniruddha Mukherjee
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #>
 Param(
-    [Parameter(Mandatory, HelpMessage = "The URL to a course homepage")]
+    [Parameter(HelpMessage = "The URL to a course homepage")]
     $link
 )
 function Show-Error($msg) {
@@ -256,7 +270,13 @@ function Import-Resoruces($target, $downloadPath) {
 }
 
 # driver
-# $link = Read-Host "Enter the OCW url"
+if ($link.Length -eq 0 ) {
+    Write-Host "ocwd Copyright (C) 2022 Aniruddha Mukherjee"
+    Write-Host "This program comes with ABSOLUTELY NO WARRANTY"
+    Write-Host "This is free software, and you are welcome to redistribute it under certain conditions"
+    Write-Host " "
+    $link = Read-Host "Enter the URL to course homepage"
+}
 $link = $link.Trim()
 
 if ($link -match 'https://ocw\.mit\.edu/courses') {
