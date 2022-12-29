@@ -1,5 +1,6 @@
 <# 
-    Fetches courses from MIT OCW
+    Author: Aniruddha Mukherjee
+    Description: Fetches MIT OCW courses for download
 #>
 function Show-Error($msg) {
     Write-Host $msg -ForegroundColor DarkRed
@@ -62,14 +63,6 @@ function Show-Resources {
     }
 }
 
-# Gets the input from the user
-# function Get-Path {
-#     Write-Host "Enter the download path: " -ForegroundColor Cyan
-#     Write-Host "Example: C:\Users\john\OneDrive\Desktop" -ForegroundColor DarkCyan
-#     $downloadPath = Read-Host "➡️"
-#     return $downloadPath
-# }
-
 function Get-Response() {
     Write-Host "Enter the index of the desired resource for download"  -ForegroundColor Cyan
     Write-Host "💡Use commas for multiple indices"  -ForegroundColor Gray
@@ -81,6 +74,7 @@ function Get-Response() {
     Write-Host "Example: C:\Users\john\OneDrive\Desktop" -ForegroundColor DarkCyan
     $downloadPath = Read-Host "➡️"
     Import-Resoruces $target $downloadPath
+    Invoke-Item $downloadPath
 }
 
 function Confirm-Response($userInputs) {
@@ -126,7 +120,6 @@ function Get-Files($baseUri, $dirName, $downloadPath) {
     $AllMatches = ($basePage.Content | Select-String '<a href="(?<downloadLink>.*)" target="_blank" download>' -AllMatches).Matches
     $downloadLinksList = ($AllMatches.Groups.Where{ $_.Name -like 'downloadLink' }).Value
     
-    # Write-Host $downloadLinksList
     $files = @()
     New-Item -Path ($downloadPath + $dirName) -ItemType Directory 
     $downloadPath = $downloadPath + $dirName
@@ -140,11 +133,6 @@ function Get-Files($baseUri, $dirName, $downloadPath) {
         }
     }
     $jobs = @()
-
-    # foreach ($file in $files) {
-    #     Write-Host $file
-    # }
-
     foreach ($file in $files) {
         $jobs += Start-ThreadJob -Name $file.OutFile -ScriptBlock {
             $params = $using:file
@@ -152,13 +140,15 @@ function Get-Files($baseUri, $dirName, $downloadPath) {
         }
     }
 
-    Write-Host ($dirName -split '\\')[1] "downloads started..." -ForegroundColor DarkYellow
-    Wait-Job -Job $jobs
+    Write-Host ($dirName -split '\\')[1] "downloads in progress..." -ForegroundColor DarkYellow
+    
+    $waitJobLog = Wait-Job -Job $jobs
 
+    $results = @()
     foreach ($job in $jobs) {
-        Receive-Job -Job $job
-        
+        $results += Receive-Job -Job $job
     }
+    Write-Host  ($dirName -split '\\')[1] "downloads finished" -ForegroundColor Green
 }
 function Get-LVideos($downloadPath) {
     try {
@@ -204,6 +194,7 @@ function Import-Resoruces($target, $downloadPath) {
                     Get-LVideos($downloadPath)
                 }
                 'Assignments' {
+                    Write-Host "Downloading Assignments..." -ForegroundColor Yellow
                     Get-Assignments($downloadPath)
                 }
                 'Exams' {
