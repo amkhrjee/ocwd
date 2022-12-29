@@ -5,6 +5,7 @@
 <p align="center" >
    <img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/amkhrjee/ocwd">
     <img alt="GitHub" src="https://img.shields.io/github/license/amkhrjee/ocwd">
+    <img alt="twitter" src="https://img.shields.io/badge/twitter-amkhrjee-blue">
 </p>
 
 ## What does `ocwd` do?
