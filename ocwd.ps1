@@ -1,16 +1,15 @@
-<#
-.SYNOPSIS
-    Downloads resources from the MIT OCW for any given course to any given path.
-.DESCRIPTION
-    This applet scrapes the MIT OCW website for courses and provides an easy way to download all resources for a given course.
-.PARAMETER link
-    The URL of a MIT OCW course homepage.
-.EXAMPLE
-    ocwd https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/
-.NOTES
-    Creation Date: Dec 30, 2022
-    Version: 1.0.0
 
+<#PSScriptInfo
+
+.VERSION 1.0
+
+.GUID a31639e2-a8ab-4a29-9fed-66d5b5f9e1e9
+
+.AUTHOR aniru
+
+.COMPANYNAME
+
+.COPYRIGHT
     Copyright (C) 2022  Aniruddha Mukherjee
 
     This program is free software: you can redistribute it and/or modify
@@ -25,7 +24,34 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+.TAGS
+
+.LICENSEURI
+
+.PROJECTURI
+
+.ICONURI
+
+.EXTERNALMODULEDEPENDENCIES 
+
+.REQUIREDSCRIPTS
+
+.EXTERNALSCRIPTDEPENDENCIES
+
+.RELEASENOTES
+
+
+.PRIVATEDATA
+
 #>
+
+<# 
+
+.DESCRIPTION 
+ Downloads MIT OCW course resources 
+
+#> 
 Param(
     [Parameter(HelpMessage = "The URL to a course homepage")]
     $link
