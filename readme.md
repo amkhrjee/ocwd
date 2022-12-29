@@ -12,7 +12,7 @@
 ## Installation
 `ocwd` is a [PowerShell](https://learn.microsoft.com/en-us/powershell/) script, therefore, it works wherever PowerShell works. Currently, PowerShell is available on both Windows and UNIX (that covers both Linux and MacOS) systems. Read their [installation guide](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-7.3) for more information on this.
 
-`ocwd` is available via the PowerShellGallery:
+Paste the following in your PowerShell terminal to install `ocwd` to your system.
 ```ps1
 Install-Script -Name ocwd
 ```
