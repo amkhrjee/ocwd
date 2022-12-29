@@ -37,15 +37,20 @@ function Get-Details {
 }
 
 function Set-ResourceList($downloadsPagelink) {
-    $downloadPage = Invoke-WebRequest -Uri $downloadsPagelink
-    $keys = 'Lecture Videos', 'Assignments', 'Exams', 'Lecture Notes'
-    $resourceList = @()
-    foreach ($key in $keys) {
-        if ($downloadPage.Content -match $key) {
-            $resourceList += $key
+    try {
+        $downloadPage = Invoke-WebRequest -Uri $downloadsPagelink
+        $keys = 'Lecture Videos', 'Assignments', 'Exams', 'Lecture Notes'
+        $resourceList = @()
+        foreach ($key in $keys) {
+            if ($downloadPage.Content -match $key) {
+                $resourceList += $key
+            }
         }
+        return $resourceList
     }
-    return $resourceList
+    catch {
+        Write-Host "Error in loading resouce list" -ForegroundColor Red
+    }
 }
 function Show-Resources {
     # shows what resources are available for download
@@ -70,9 +75,15 @@ function Get-Response() {
     Write-Host "🪶 Example: 1,2"
     $userInputs = Read-Host "➡️"
     $target = Confirm-Response($userInputs)
-    Write-Host "Enter the download path: " -ForegroundColor Cyan
-    Write-Host "Example: C:\Users\john\OneDrive\Desktop" -ForegroundColor DarkCyan
-    $downloadPath = Read-Host "➡️"
+    try {
+        Write-Host "Enter the download path: " -ForegroundColor Cyan
+        Write-Host "🪶Example: C:\Users\john\OneDrive\Desktop"
+        $downloadPath = Read-Host "➡️"
+    }
+    catch {
+        Show-Error("Invalid path")
+    }
+  
     Import-Resoruces $target $downloadPath
     Invoke-Item $downloadPath
 }
@@ -89,7 +100,7 @@ function Confirm-Response($userInputs) {
             }
             else {
                 if (($userInputs -lt 0) -or ($userInputs -gt $resList.Length)) {
-                    Write-Error "Invalid Index"
+                    Write-Host "Invalid Index" -ForegroundColor Red
                     Get-Response
                     break
                 }
@@ -101,7 +112,7 @@ function Confirm-Response($userInputs) {
             $userInputs = $userInputs -split ','
             foreach ($userInput in $userInputs) {
                 if (($userInput -lt 0) -or ($userInput -gt $resList.Length)) {
-                    Write-Error "Invalid Index"
+                    Write-Host "Invalid Index" -ForegroundColor Red
                     Get-Response
                     break
                 }
@@ -249,7 +260,15 @@ if ($link -match 'https://ocw\.mit\.edu/courses') {
     }
     catch {
         $StatusCode = $_.Exception.Response.StatusCode.value__
-        Write-Host "Error: Exited with error code" $StatusCode -ForegroundColor Red
+        if ($StatusCode.Length -eq 0) { $StatusCode = 502 }
+        $StatusCode = [System.Convert]::ToDecimal($StatusCode)
+        Write-Host "Error: Exited with error code $StatusCode" -ForegroundColor Red
+        if (($StatusCode -ge 300) -and ($StatusCode -lt 400)) {
+            Write-Host "The URL provided does not exist" -ForegroundColor Red
+        }
+        elseif (($StatusCode -ge 400) -and ($StatusCode -lt 600)) {
+            Write-Host "Please check your internet connection and try again" -ForegroundColor Red
+        }
     }
  
 }
