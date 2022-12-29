@@ -1,7 +1,20 @@
-<# 
+<#
+.SYNOPSIS
+    Downloads resources from the MIT OCW for any given course to any given path.
+.DESCRIPTION
+    This applet scrapes the MIT OCW website for courses and provides an easy way to download all resources for a given course.
+.PARAMETER link
+    The URL of a MIT OCW course homepage.
+.EXAMPLE
+    ocwd https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/
+.NOTES
     Author: Aniruddha Mukherjee
-    Description: Fetches MIT OCW courses for download
+    Date:   Dec 30, 2022
 #>
+Param(
+    [Parameter(Mandatory, HelpMessage = "The URL to a course homepage")]
+    $link
+)
 function Show-Error($msg) {
     Write-Host $msg -ForegroundColor DarkRed
 }
@@ -123,8 +136,6 @@ function Confirm-Response($userInputs) {
     }
 }
 
-
-
 function Get-Files($baseUri, $dirName, $downloadPath) {
     $basePage = Invoke-WebRequest -Uri $baseUri
     # Thanks to Emanuel Palm -> "https://pipe.how/invoke-webscrape/#parsing-data"
@@ -244,7 +255,7 @@ function Import-Resoruces($target, $downloadPath) {
 }
 
 # driver
-$link = Read-Host "Enter the OCW url"
+# $link = Read-Host "Enter the OCW url"
 $link = $link.Trim()
 
 if ($link -match 'https://ocw\.mit\.edu/courses') {
