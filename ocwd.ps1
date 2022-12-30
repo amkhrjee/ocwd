@@ -10,11 +10,11 @@
 
 .COPYRIGHT Aniruddha Mukherjee
 
-.TAGS downloader, ocw-dl
+.TAGS PSEdition_Core
 
-.LICENSEURI
+.LICENSEURI https://www.gnu.org/licenses/gpl-3.0.en.html
 
-.PROJECTURI
+.PROJECTURI https://github.com/amkhrjee/ocwd
 
 .ICONURI
 
