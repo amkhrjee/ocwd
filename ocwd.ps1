@@ -1,4 +1,3 @@
-
 <#PSScriptInfo
 
 .VERSION 1.0.0
@@ -169,16 +168,25 @@ function Get-Files($baseUri, $dirName, $downloadPath) {
     $AllMatches = ($basePage.Content | Select-String '<a href="(?<downloadLink>.*)" target="_blank" download>' -AllMatches).Matches
     $downloadLinksList = ($AllMatches.Groups.Where{ $_.Name -like 'downloadLink' }).Value
     
+    # # File names: does not work because of unsupported naming convention of ocw
+    # $titlePattern = '<a class="resource-list-title" href=".*">\n\s(?<resTitle>.*)\n\s+<\/a>'
+    # $TitleMatches = ($basePage.Content | Select-String $titlePattern -AllMatches).Matches
+    # $TitlesList = ($TitleMatches.Groups.Where{ $_.Name -like 'resTitle' }).Value
     $files = @()
     New-Item -Path ($downloadPath + $dirName) -ItemType Directory 
     $downloadPath = $downloadPath + $dirName
+    $index = 1
     foreach ($downloadLink in $downloadLinksList) {
         if ($downloadLink -match '/courses/') {
             $downloadLink = 'https://ocw.mit.edu' + $downloadLink
+            $extension = '.pdf'
+        }
+        else {
+            $extension = '.mp4'
         }
         $files += @{
             Uri     = $downloadLink
-            outFile = $downloadPath + '\' + ($downloadLink -split '/')[5]
+            outFile = $downloadPath + '\' + ($dirName -split '\\')[1] + ' ' + ($index++) + $extension
         }
     }
     $jobs = @()
