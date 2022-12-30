@@ -5,12 +5,14 @@
 <p align="center" >
    <img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/amkhrjee/ocwd">
     <img alt="GitHub" src="https://img.shields.io/github/license/amkhrjee/ocwd">
-    <img alt="twitter" src="https://img.shields.io/badge/twitter-amkhrjee-blue">
+    <!-- <img alt="twitter" src="https://img.shields.io/powershellgallery/p/ocwd.svg"> -->
 </p>
 
 ## What does `ocwd` do?
 `ocwd` is a command line utility that downloads resources from any [MIT OCW](https://ocw.mit.edu/) course to any storage path provided by you. The resources are available under the creative commons license and MIT reserves all rights to the content. This tool simply scrapes the OCW website for resources and offers a simple and easy way for downloading any course resource for offline use.
 ## Installation
+> This script works best on Windows.
+
 `ocwd` is a [PowerShell](https://learn.microsoft.com/en-us/powershell/) script, therefore, it works wherever PowerShell works. Read their [installation guide](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-7.3) for more information on this.
 
 This tool works with PowerShell `v7.x.x`. That means, it is recommended to update your PS installation to the latest available version. 
