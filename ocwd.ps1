@@ -1,6 +1,6 @@
 <#PSScriptInfo
 
-.VERSION 1.0.0
+.VERSION 1.1.0
 
 .GUID a31639e2-a8ab-4a29-9fed-66d5b5f9e1e9
 
@@ -10,7 +10,7 @@
 
 .COPYRIGHT Aniruddha Mukherjee
 
-.TAGS
+.TAGS downloader, ocw-dl
 
 .LICENSEURI
 
