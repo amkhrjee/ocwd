@@ -32,3 +32,5 @@ Finally, paste the following in your PowerShell terminal to install `ocwd` to yo
 ```ps1
 Install-Script -Name ocwd
 ```
+## Demo 
+![Demo for ocwd](https://imgur.com/a/vCNIhlh)
