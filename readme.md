@@ -33,4 +33,4 @@ Finally, paste the following in your PowerShell terminal to install `ocwd` to yo
 Install-Script -Name ocwd
 ```
 ## Demo 
-![Demo for ocwd](https://imgur.com/a/vCNIhlh)
+<img src="https://i.imgur.com/ODutHXm.gif" />
