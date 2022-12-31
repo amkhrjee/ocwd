@@ -34,6 +34,7 @@ Install-Script -Name ocwd
 ```
 ## Demo 
 <img src="https://i.imgur.com/ODutHXm.gif" />
+
 ![demo image](https://i.imgur.com/1yPPAng.png)
 
 If the GIF is not working, you can watch this demo  video instead: https://www.youtube.com/watch?v=9Oe9vrEQY28
