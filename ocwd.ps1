@@ -164,14 +164,14 @@ function Confirm-Response($userInputs) {
 
 function Get-Files($baseUri, $dirName, $downloadPath) {
     $basePage = Invoke-WebRequest -Uri $baseUri
-    switch ($dirName) {
-        '\LVideos' {
-            $downloadLinksList = $basePage.Links | Where-Object { $_.href -match '.mp4$' } | Select-Object -ExpandProperty href
-        }
-        Default {
-            $downloadLinksList = $basePage.Links | Where-Object { $_.href -match '.pdf$' } | Select-Object -ExpandProperty href
-        }
+    if ($dirName -eq '\LVideos') {
+         
+        $downloadLinksList = $basePage.Links | Where-Object { $_.href -match '.mp4$' } | Select-Object -ExpandProperty href
     }
+    else {
+        $downloadLinksList = $basePage.Links | Where-Object { $_.href -match '.pdf$' } | Select-Object -ExpandProperty href
+    }
+    
     Write-Host $downloadLinksList    
     $files = @()
     New-Item -Path ($downloadPath + $dirName) -ItemType Directory 
