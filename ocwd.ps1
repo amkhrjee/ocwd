@@ -1,6 +1,6 @@
 <#PSScriptInfo
 
-.VERSION 1.1.0
+.VERSION 1.1.1
 
 .GUID a31639e2-a8ab-4a29-9fed-66d5b5f9e1e9
 
@@ -10,7 +10,7 @@
 
 .COPYRIGHT Aniruddha Mukherjee
 
-.TAGS PSEdition_Core
+.TAGS PSEdition_Core Windows
 
 .LICENSEURI https://www.gnu.org/licenses/gpl-3.0.en.html
 
@@ -24,7 +24,7 @@
 
 .EXTERNALSCRIPTDEPENDENCIES
 
-.RELEASENOTES
+.RELEASENOTES Improved RegEx logic
 
 
 .PRIVATEDATA
