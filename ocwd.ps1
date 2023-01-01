@@ -164,14 +164,15 @@ function Confirm-Response($userInputs) {
 
 function Get-Files($baseUri, $dirName, $downloadPath) {
     $basePage = Invoke-WebRequest -Uri $baseUri
-    # Thanks to Emanuel Palm -> "https://pipe.how/invoke-webscrape/#parsing-data"
-    $AllMatches = ($basePage.Content | Select-String '<a href="(?<downloadLink>.*)" target="_blank" download>' -AllMatches).Matches
-    $downloadLinksList = ($AllMatches.Groups.Where{ $_.Name -like 'downloadLink' }).Value
-    
-    # # File names: does not work because of unsupported naming convention of ocw
-    # $titlePattern = '<a class="resource-list-title" href=".*">\n\s(?<resTitle>.*)\n\s+<\/a>'
-    # $TitleMatches = ($basePage.Content | Select-String $titlePattern -AllMatches).Matches
-    # $TitlesList = ($TitleMatches.Groups.Where{ $_.Name -like 'resTitle' }).Value
+    switch ($dirName) {
+        '\LVideos' {
+            $downloadLinksList = $basePage.Links | Where-Object { $_.href -match '.mp4$' } | Select-Object -ExpandProperty href
+        }
+        Default {
+            $downloadLinksList = $basePage.Links | Where-Object { $_.href -match '.pdf$' } | Select-Object -ExpandProperty href
+        }
+    }
+    Write-Host $downloadLinksList    
     $files = @()
     New-Item -Path ($downloadPath + $dirName) -ItemType Directory 
     $downloadPath = $downloadPath + $dirName
