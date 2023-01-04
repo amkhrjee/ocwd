@@ -20,7 +20,7 @@
 
 .PROJECTURI https://github.com/amkhrjee/ocwd
 
-.ICONURI
+.ICONURI https://i.imgur.com/1eklM2i.png
 
 .EXTERNALMODULEDEPENDENCIES 
 
@@ -33,14 +33,9 @@
 
 .PRIVATEDATA
 
+.DESCRIPTION Downloads MIT OCW course resources 
+
 #>
-
-<# 
-
-.DESCRIPTION 
- Downloads MIT OCW course resources 
-
-#> 
 
 Param(
     [Parameter(HelpMessage = "The URL to a course homepage")]
@@ -235,16 +230,22 @@ function Get-Files($baseUri, $dirName, $downloadPath) {
         }
     }
     $jobs = @()
-    foreach ($file in $files) {
-        $jobs += Start-ThreadJob -Name $file.OutFile -ScriptBlock {
-            $params = $using:file
-            try {
-                Invoke-WebRequest @params
-            }
-            catch {
-                Show-Exception($_.Exception.Message)
+    try {
+        foreach ($file in $files) {
+
+            $jobs += Start-ThreadJob -Name $file.OutFile -ScriptBlock {
+                $params = $using:file
+                try {
+                    Invoke-WebRequest @params
+                }
+                catch {
+                    Show-Exception($_.Exception.Message)
+                }
             }
         }
+    }
+    catch {
+        # Opportunity for Windows Powershell compatibility
     }
 
     Write-Host ($dirName -split '\\')[1] "downloads in progress..." -ForegroundColor DarkYellow
@@ -257,39 +258,46 @@ function Get-Files($baseUri, $dirName, $downloadPath) {
     }
     Write-Host  ($dirName -split '\\')[1] "downloads finished" -ForegroundColor Green
 }
+
 function Get-LVideos($downloadPath) {
     try {
         Get-Files ($link + 'resources/lecture-videos/') '\LVideos' $downloadPath
     }
     catch {
         Show-Error("Error in dowloading Lecture Videos")
+        Show-Exception($_.Exception.Message)
     }
 }
+
 function Get-Assignments($downloadPath) {
     try {
         Get-Files ($link + 'resources/assignments/') '\Assignments' $downloadPath
     }
     catch {
         Show-Error("Error in downloading Assignments")
+        Show-Exception($_.Exception.Message)
     }
 }
+
 function Get-Exams($downloadPath) {
     try {
         Get-Files ($link + 'resources/exams/') '\Exams' $downloadPath
     }
     catch {
         Show-Error("Error in downloading Exams")
+        Show-Exception($_.Exception.Message)
     }
 }
+
 function Get-LNotes($downloadPath) {
     try {
         Get-Files ($link + 'resources/lecture-notes/') '\LNotes' $downloadPath
     }
     catch {
         Show-Error('Error in downloading LNotes')
+        Show-Exception($_.Exception.Message)
     }
 } 
-
 
 function Import-Resoruces($userResponse) {
     $downloadPath = $userResponse['inputPath']
@@ -353,49 +361,51 @@ $link = $link.Trim()
 if ($link -match 'https://ocw\.mit\.edu/courses') {
     try {   
         $webResponse = Invoke-WebRequest -Uri $link
-        Write-Host "╰(*°▽°*)╯ Course Found" -ForegroundColor DarkGreen #make this more useful
-        Write-Host ":::::::::::::::::::::::::::::::::::"
-        $details = Get-Details
-        Show-Details($details)
-        $additionalDetails = Get-AdditionalDetails
-        Show-AdditonalDetails($additionalDetails)
-
-        if ($link -match '/$') { $downloadsPagelink = $link + 'download/' } 
-        else { $downloadsPagelink = $link + '/download/' }
-        try {
-
-            $resList = Set-ResourceList($downloadsPagelink)
-            Show-Resources
-        }
-        catch {
-            Show-Error($_.Exception.InnerException.Message)
-            Exit
-        }
-        $userResponse = Get-Response
-        try {
-
-            Import-Resoruces($userResponse)
-            Invoke-Item $userResponse['inputPath']
-        }
-        catch {
-            Show-Exception($_.Exception.Message)
-        }
     }
     catch {
         $StatusCode = $_.Exception.Response.StatusCode.value__
         if ($StatusCode.Length -eq 0) { $StatusCode = 502 }
         $StatusCode = [System.Convert]::ToDecimal($StatusCode)
-        Write-Host "Error: Exited with error code $StatusCode" -ForegroundColor Red
+        Show-Error("Exited with error code $StatusCode")
         if (($StatusCode -ge 300) -and ($StatusCode -lt 400)) {
-            Write-Host "The URL provided does not exist" -ForegroundColor Red
+            Show-Error("The URL provided does not exist")
         }
         elseif (($StatusCode -ge 400) -and ($StatusCode -lt 600)) {
-            Write-Host "Please check your internet connection and try again" -ForegroundColor Red
+            Show-Error("Invalid URL or No internet")
         }
+        Exit
     }
+    Write-Host "╰(*°▽°*)╯ Course Found" -ForegroundColor DarkGreen #make this more useful
+    Write-Host ":::::::::::::::::::::::::::::::::::"
+    $details = Get-Details
+    Show-Details($details)
+    $additionalDetails = Get-AdditionalDetails
+    Show-AdditonalDetails($additionalDetails)
+
+    if ($link -match '/$') { $downloadsPagelink = $link + 'download/' } 
+    else { $downloadsPagelink = $link + '/download/' }
+    try {
+
+        $resList = Set-ResourceList($downloadsPagelink)
+        Show-Resources
+    }
+    catch {
+        Show-Error($_.Exception.InnerException.Message)
+        Exit
+    }
+    $userResponse = Get-Response
+    try {
+
+        Import-Resoruces($userResponse)
+        Invoke-Item $userResponse['inputPath']
+    }
+    catch {
+        Show-Exception($_.Exception.Message)
+    }
+    
  
 }
 else {
-    Write-Host "Error: Invalid link" -ForegroundColor Red
-    Write-Host "Please enter a link that starts with `"https://ocw.mit.edu/courses/`"" -ForegroundColor DarkRed
+    Show-Error("Invalid URL")
+    Show-Instruction("Please enter a link that starts with `"https://ocw.mit.edu/courses/`"")
 }

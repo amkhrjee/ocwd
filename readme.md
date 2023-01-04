@@ -20,8 +20,8 @@ This tool works best with PowerShell-Core `v7.x.x`. That means, it is recommende
 
 If you are installing a script for the first time, the following instructions will help you get started, otherwise you can skip ahead to the installation script. 
 
-With the latest version available, we need to set the `ExecutionPolicy` to `RemoteSigned` as the default one is is unsuitable for running user downloaded script. 
-Next, we need to set [PSGallery](https://www.powershellgallery.com/) as a trusted source for our scripts, as `ocwd` is hosted at PSGallery repository. 
+With the latest version available, we need to set the `ExecutionPolicy` to `RemoteSigned` as the default one is unsuitable for running user downloaded script. 
+Next, we need to set [PSGallery](https://www.powershellgallery.com/packages/ocwd) as a trusted source for our scripts, as `ocwd` is hosted at PSGallery repository. 
 
 To do this, start PowerShell 7 in *Administartor Mode* and type/paste the following:
 ```ps1
