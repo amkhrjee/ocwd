@@ -147,6 +147,9 @@ function Get-Options {
                     throw "Invalid index"
                 }
             }
+            elseif (($userInputs -eq 'a') -or ($userInputs -eq 'A')) {
+                return 'all'
+            }
         }
         2 {
             throw "Invalid index"
@@ -301,7 +304,7 @@ function Get-LNotes($downloadPath) {
 
 function Import-Resoruces($userResponse) {
     $downloadPath = $userResponse['inputPath']
-    if (($userResponse['userInputs'] -eq 'a') -or ($userResponse['userInputs'] -eq 'A')) {
+    if ($userResponse['userInputs'] -eq 'all') {
         # download everything that is in the resList
         foreach ($res in $resList) {
             switch ($res) {
