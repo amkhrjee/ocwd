@@ -8,6 +8,10 @@
 
 .COMPANYNAME
 
+.SYNOPSIS Downloads resources from the MIT OpenCourseWare repository.
+
+.EXAMPLE ocwd <link to a course homepage>
+
 .COPYRIGHT Aniruddha Mukherjee
 
 .TAGS PSEdition_Core Windows
@@ -41,40 +45,58 @@ Param(
     [Parameter(HelpMessage = "The URL to a course homepage")]
     $link
 )
+
+$patterns = @{
+    titlePattern             = '<title>(?<title>.*)</title>'
+    instructorPattern        = '<a class="course-info-instructor strip-link-offline"  href=".*">(?<instructor>.*)</a>'
+    additionalDetailsPattern = '<span class="course-number-term-detail">(?<other>.*)</span>'
+}
 function Show-Error($msg) {
-    Write-Host $msg -ForegroundColor DarkRed
+    Write-Host "Error:" $msg -ForegroundColor Red
 }
-#shows the details of the course
+
+function Show-Instruction($msg) {
+    Write-Host $msg -ForegroundColor Blue
+}
+
 function Get-Details {
-    $titlePattern = '<title>(?<title>.*)</title>'
-   
-    if ($webResponse.Content -match $titlePattern) { 
-        $titleName = $Matches.title -split "\|" #split expects a RE
-        Write-Host "▶️Title:" $titleName[0]
-        
+    if ($webResponse.Content -match $patterns['titlePattern']) { 
+        $titleName = ($Matches.title -split "\|")[0] #split expects a RE
     }
     else {
-        Show-Error("Title Not Found")
+        $titleName = "Title not found"
     }
-    # Don't touch this!
-    $instructorPattern = '<a class="course-info-instructor strip-link-offline"  href=".*">(?<instructor>.*)</a>'
-   
-    if ($webResponse.Content -match $instructorPattern) {
-        Write-Host "▶️Instructor:" $Matches.instructor
+    if ($webResponse.Content -match $patterns['instructorPattern']) {
+        $instructorName = $Matches.instructor
     }
     else {
-        Show-Error("Instructor Not Found")
+        $instructorName = "Instructor not found"
     }
+    return @($titleName, $instructorName)
+}
 
-    $otherPattern = '<span class="course-number-term-detail">(?<other>.*)</span>'
-    if ($webResponse.Content -match $otherPattern) { 
-        $otherDetails = $Matches.other -split "\|"
-        Write-Host "▶️ID:" $otherDetails[0].Trim()
-        Write-Host "▶️Semester:" $otherDetails[1].Trim()
-        Write-Host "▶️Level:" $otherDetails[2].Trim()
+
+function Show-Details ($detailsList) {
+    Write-Host "▶️Title:" $detailsList[0]
+    Write-Host "▶️Instructor:" $detailsList[1] 
+}
+
+function Get-AdditionalDetails {
+    if ($webResponse.Content -match $patterns['additionalDetailsPattern']) {
+        return $Matches.other -split "\|" 
+    }
+    else {
+        return @("Course ID not found", 
+            "Course Semester not found.", 
+            "Course Level not found.")
     }
 }
 
+function Show-AdditonalDetails($additionalDetails) {
+    Write-Host "▶️ID:" $additionalDetails[0]
+    Write-Host "▶️Semester:" $additionalDetails[1]
+    Write-Host "▶️Level:" $additionalDetails[2]
+}
 function Set-ResourceList($downloadsPagelink) {
     try {
         $downloadPage = Invoke-WebRequest -Uri $downloadsPagelink
@@ -305,7 +327,10 @@ if ($link -match 'https://ocw\.mit\.edu/courses') {
         $webResponse = Invoke-WebRequest -Uri $link
         Write-Host "⚡Course Found" -ForegroundColor DarkGreen #make this more useful
         Write-Host ":::::::::::::::::::::::::::::::::::"
-        Get-Details
+        $details = Get-Details
+        Show-Details($details)
+        $additionalDetails = Get-AdditionalDetails
+        Show-AdditonalDetails($additionalDetails)
         $downloadsPagelink = $link + 'download/'
         $resList = Set-ResourceList($downloadsPagelink)
         Show-Resources
