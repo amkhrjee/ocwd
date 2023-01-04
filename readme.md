@@ -6,6 +6,7 @@
    <img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/amkhrjee/ocwd">
     <img alt="GitHub" src="https://img.shields.io/github/license/amkhrjee/ocwd">
     <img alt="platform" src="https://img.shields.io/powershellgallery/p/ocwd.svg">
+    <img alt="PowerShell Gallery Version" src="https://img.shields.io/powershellgallery/v/ocwd">
     <img alt="PowerShell Gallery" src="https://img.shields.io/powershellgallery/dt/ocwd">
 </p>
 
