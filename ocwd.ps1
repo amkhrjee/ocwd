@@ -41,6 +41,7 @@
  Downloads MIT OCW course resources 
 
 #> 
+
 Param(
     [Parameter(HelpMessage = "The URL to a course homepage")]
     $link
@@ -57,6 +58,10 @@ function Show-Error($msg) {
 
 function Show-Instruction($msg) {
     Write-Host $msg -ForegroundColor Blue
+}
+
+function Show-Exception($msg) {
+    Write-Host $msg -ForegroundColor DarkRed  
 }
 
 function Get-Details {
@@ -77,8 +82,8 @@ function Get-Details {
 
 
 function Show-Details ($detailsList) {
-    Write-Host "▶️Title:" $detailsList[0]
-    Write-Host "▶️Instructor:" $detailsList[1] 
+    Write-Host "- Title:" $detailsList[0]
+    Write-Host "- Instructor:" $detailsList[1] 
 }
 
 function Get-AdditionalDetails {
@@ -93,9 +98,9 @@ function Get-AdditionalDetails {
 }
 
 function Show-AdditonalDetails($additionalDetails) {
-    Write-Host "▶️ID:" $additionalDetails[0]
-    Write-Host "▶️Semester:" $additionalDetails[1]
-    Write-Host "▶️Level:" $additionalDetails[2]
+    Write-Host "- ID:" $additionalDetails[0]
+    Write-Host "- Semester:" $additionalDetails[1]
+    Write-Host "- Level:" $additionalDetails[2]
 }
 function Set-ResourceList($downloadsPagelink) {
     try {
@@ -110,91 +115,108 @@ function Set-ResourceList($downloadsPagelink) {
         return $resourceList
     }
     catch {
-        Write-Host "Error in loading resouce list" -ForegroundColor Red
+        Show-Error("Unable to load resource list")
     }
 }
 function Show-Resources {
-    # shows what resources are available for download
-    Write-Host "::::::::::::::::::::::::::::::::"
-    Write-Host "⚡Resources Available" -ForegroundColor Green
-    Write-Host "::::::::::::::::::::::::::::::::"
-    try {
+    if ($resList.Length -ne 0) {
+        Write-Host "::::::::::::::::::::::::::::::::"
+        Write-Host "╰(*°▽°*)╯ Resources Available" -ForegroundColor Green
+        Write-Host "::::::::::::::::::::::::::::::::"   
         $index = 0
         foreach ($res in $resList) {
             Write-Host ($index += 1) $res 
         }
     }
-    catch {
-        Write-Error "Error in fetching resources"      
+    else {
+        Write-Host ":(" -ForegroundColor Red
+        Write-Host "No resources found!" -ForegroundColor Red
+        Show-Instruction("Please try downloading manually.")
+        Exit
     }
 }
 
-function Get-Response() {
+function Get-Options {
     Write-Host "Enter the index of the desired resource for download"  -ForegroundColor Cyan
-    Write-Host "💡Use commas for multiple indices"  -ForegroundColor Gray
-    Write-Host "💡Enter A for downloading all resources" -ForegroundColor Gray
-    Write-Host "🪶 Example: 1,2"
-    $userInputs = Read-Host "➡️"
-    $target = Confirm-Response($userInputs)
-    try {
-        Write-Host "Enter the download path: " -ForegroundColor Cyan
-        Write-Host "🪶Example: C:\Users\john\OneDrive\Desktop"
-        $downloadPath = Read-Host "➡️"
-    }
-    catch {
-        Show-Error("Invalid path")
-    }
-  
-    Import-Resoruces $target $downloadPath
-    Invoke-Item $downloadPath
-}
-
-function Confirm-Response($userInputs) {
+    Write-Host "=>Use commas for multiple indices"  -ForegroundColor Gray
+    Write-Host "=>Enter A for downloading all resources" -ForegroundColor Gray
+    Write-Host "=>Example: 1,2"
+    $userInputs = Read-Host "Input"
     switch ($userInputs.Length) {
         0 {
-            Show-Error("Input cannot be empty")
-            Get-Response
+            throw "Input cannot be empty"
         }
         1 {
-            if (($userInputs -eq 'A') -or ($userInputs -eq 'a')) {
-                return 999
-            }
-            else {
-                if (($userInputs -lt 0) -or ($userInputs -gt $resList.Length)) {
-                    Write-Host "Invalid Index" -ForegroundColor Red
-                    Get-Response
-                    break
+            if (($userInputs -ne 'a') -or ($userInputs -ne 'A')) {
+                if (([System.Convert]::ToDecimal($userInputs) -lt 1) -or ([System.Convert]::ToDecimal($userInputs) -gt $resList.Length)) {
+                    throw "Invalid index"
                 }
-                return ($userInputs - 1)
             }
+        }
+        2 {
+            throw "Invalid index"
         }
         Default {
             $targetIndices = @()
             $userInputs = $userInputs -split ','
             foreach ($userInput in $userInputs) {
-                if (($userInput -lt 0) -or ($userInput -gt $resList.Length)) {
-                    Write-Host "Invalid Index" -ForegroundColor Red
-                    Get-Response
-                    break
+                if (([System.Convert]::ToDecimal($userInput) -lt 0) -or ([System.Convert]::ToDecimal($userInput) -gt $resList.Length)) {
+                    throw "One or more of the indices invalid"
                 }
                 $targetIndices += ($userInput - 1)
+        
             }
             return $targetIndices
         }
     }
+    return $userInputs - 1
+}
+
+function Get-Path {
+    Write-Host "Enter the download path: " -ForegroundColor Cyan
+    Write-Host "=>Example: C:\Users\john\OneDrive\Desktop"
+    $inputPath = Read-Host "Input" 
+    if ($inputPath.Length -eq 0) {
+        throw "Path cannot be empty string"
+    }
+    return $inputPath
+}
+
+function Get-Response {
+    try {
+        $userInputs = Get-Options
+    }
+    catch {
+        Show-Exception($_.Exception.Message)
+        Get-Response
+    }
+    try {
+        $inputPath = Get-Path
+    }
+    catch {
+        Show-Exception($_.Exception.Message)
+        Get-Response
+    }
+    return @{
+        inputPath  = $inputPath
+        userInputs = $userInputs
+    }
 }
 
 function Get-Files($baseUri, $dirName, $downloadPath) {
-    $basePage = Invoke-WebRequest -Uri $baseUri
+    try {
+        $basePage = Invoke-WebRequest -Uri $baseUri
+    }
+    catch {
+        Show-Exception($_.Exception.Message)
+    }
     if ($dirName -eq '\LVideos') {
-         
         $downloadLinksList = $basePage.Links | Where-Object { $_.href -match '.mp4$' } | Select-Object -ExpandProperty href
     }
     else {
         $downloadLinksList = $basePage.Links | Where-Object { $_.href -match '.pdf$' } | Select-Object -ExpandProperty href
     }
     
-    Write-Host $downloadLinksList    
     $files = @()
     New-Item -Path ($downloadPath + $dirName) -ItemType Directory 
     $downloadPath = $downloadPath + $dirName
@@ -216,7 +238,12 @@ function Get-Files($baseUri, $dirName, $downloadPath) {
     foreach ($file in $files) {
         $jobs += Start-ThreadJob -Name $file.OutFile -ScriptBlock {
             $params = $using:file
-            Invoke-WebRequest @params
+            try {
+                Invoke-WebRequest @params
+            }
+            catch {
+                Show-Exception($_.Exception.Message)
+            }
         }
     }
 
@@ -264,8 +291,9 @@ function Get-LNotes($downloadPath) {
 } 
 
 
-function Import-Resoruces($target, $downloadPath) {
-    if ($target -eq 999) {
+function Import-Resoruces($userResponse) {
+    $downloadPath = $userResponse['inputPath']
+    if (($userResponse['userInputs'] -eq 'a') -or ($userResponse['userInputs'] -eq 'A')) {
         # download everything that is in the resList
         foreach ($res in $resList) {
             switch ($res) {
@@ -289,7 +317,7 @@ function Import-Resoruces($target, $downloadPath) {
         }
     }
     else {
-        foreach ($index in $target) {
+        foreach ($index in $userResponse['userInputs']) {
             switch ($resList[$index]) {
                 'Lecture Videos' {
                     Write-Host "Downloading Lecture Videos..." -ForegroundColor Yellow
@@ -314,7 +342,7 @@ function Import-Resoruces($target, $downloadPath) {
 
 # driver
 if ($link.Length -eq 0 ) {
-    Write-Host "ocwd Copyright (C) 2022 Aniruddha Mukherjee"
+    Write-Host "ocwd Copyright (C) 2023 Aniruddha Mukherjee"
     Write-Host "This program comes with ABSOLUTELY NO WARRANTY"
     Write-Host "This is free software, and you are welcome to redistribute it under certain conditions"
     Write-Host " "
@@ -325,16 +353,33 @@ $link = $link.Trim()
 if ($link -match 'https://ocw\.mit\.edu/courses') {
     try {   
         $webResponse = Invoke-WebRequest -Uri $link
-        Write-Host "⚡Course Found" -ForegroundColor DarkGreen #make this more useful
+        Write-Host "╰(*°▽°*)╯ Course Found" -ForegroundColor DarkGreen #make this more useful
         Write-Host ":::::::::::::::::::::::::::::::::::"
         $details = Get-Details
         Show-Details($details)
         $additionalDetails = Get-AdditionalDetails
         Show-AdditonalDetails($additionalDetails)
-        $downloadsPagelink = $link + 'download/'
-        $resList = Set-ResourceList($downloadsPagelink)
-        Show-Resources
-        Get-Response
+
+        if ($link -match '/$') { $downloadsPagelink = $link + 'download/' } 
+        else { $downloadsPagelink = $link + '/download/' }
+        try {
+
+            $resList = Set-ResourceList($downloadsPagelink)
+            Show-Resources
+        }
+        catch {
+            Show-Error($_.Exception.InnerException.Message)
+            Exit
+        }
+        $userResponse = Get-Response
+        try {
+
+            Import-Resoruces($userResponse)
+            Invoke-Item $userResponse['inputPath']
+        }
+        catch {
+            Show-Exception($_.Exception.Message)
+        }
     }
     catch {
         $StatusCode = $_.Exception.Response.StatusCode.value__
@@ -352,5 +397,5 @@ if ($link -match 'https://ocw\.mit\.edu/courses') {
 }
 else {
     Write-Host "Error: Invalid link" -ForegroundColor Red
-    Write-Host "Please enter a link that starts with `"https://ocw.mit.edu/courses/"`" -ForegroundColor DarkRed
+    Write-Host "Please enter a link that starts with `"https://ocw.mit.edu/courses/`"" -ForegroundColor DarkRed
 }
