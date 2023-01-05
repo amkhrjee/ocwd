@@ -105,7 +105,7 @@ After the installation is over, you are suggested to close and reopen your termi
 ## Usage
 There are two ways to use `ocwd`:
 ```ps1
-ocwd <your_link_here>
+ocwd your_link_here
 ```
 or just type in the command:
 ```ps1
