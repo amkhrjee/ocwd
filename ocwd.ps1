@@ -429,7 +429,7 @@ if ($link -match 'https://ocw\.mit\.edu/courses') {
     try {
 
         Import-Resoruces($userResponse)
-        # Invoke-Item $userResponse['inputPath']
+        Invoke-Item $userResponse['inputPath']
     }
     catch {
         Show-Exception($_.Exception.Message)
