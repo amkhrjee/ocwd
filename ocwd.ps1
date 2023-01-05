@@ -184,15 +184,15 @@ function Get-Response {
         $userInputs = Get-Options
     }
     catch {
-        Show-Exception($_.Exception.Message)
-        Get-Response
+        Show-Error($_.Exception.InnerException.Message)
+        Exit
     }
     try {
         $inputPath = Get-Path
     }
     catch {
-        Show-Exception($_.Exception.Message)
-        Get-Response
+        Show-Error($_.Exception.Message)
+        Exit
     }
     return @{
         inputPath  = $inputPath
@@ -248,6 +248,7 @@ function Get-Files($baseUri, $dirName, $downloadPath) {
         }
         Write-Host ($dirName -split '\\')[1] "downloads in progress..." -ForegroundColor DarkYellow
     
+        # prevents from logging job objects on screen
         $waitJobLog = Wait-Job -Job $jobs
     
         $results = @()
@@ -259,9 +260,13 @@ function Get-Files($baseUri, $dirName, $downloadPath) {
     # Windows PowerShell does not support Thread Jobs
     else {
         Write-Host ($dirName -split '\\')[1] "downloads in progress..." -ForegroundColor DarkYellow
+        $task = ($dirName -split '\\')[1]
         try {
+            $index = 1
             foreach ($file in $files) {
-                Invoke-WebRequest $file['Uri'] -OutFile $file['outFile']
+                $progress = [System.Convert]::ToInt16((($index++) / $files.Length) * 100)
+                Write-Progress -Activity "$task Downloading" -Status "$progress% complete" -PercentComplete $progress
+                Invoke-WebRequest $file['Uri'] -OutFile $file['outFile']    
             }
             Write-Host  ($dirName -split '\\')[1] "downloads finished" -ForegroundColor Green
         }
