@@ -1,6 +1,6 @@
 <#PSScriptInfo
 
-.VERSION 1.3.2
+.VERSION 1.4.2
 
 .GUID a31639e2-a8ab-4a29-9fed-66d5b5f9e1e9
 
@@ -14,7 +14,7 @@
 
 .COPYRIGHT (C) Aniruddha Mukherjee 2023
 
-.TAGS PSEdition_Core Windows PSEdition_Desktop
+.TAGS PSEdition_Core Windows PSEdition_Desktop Linux MacOS
 
 .LICENSEURI https://www.gnu.org/licenses/gpl-3.0.en.html
 
@@ -40,6 +40,8 @@ Param(
     [Parameter(HelpMessage = "The URL to a course homepage")]
     $link
 )
+$platform = $PSVersionTable.Platform
+if ($platform -eq 'Unix') { $slash = '/' } else { $slash = '\' } 
 
 $patterns = @{
     titlePattern             = '<title>(?<title>.*)</title>'
@@ -213,7 +215,7 @@ function Get-Files($baseUri, $dirName, $downloadPath) {
     catch {
         Show-Exception($_.Exception.Message)
     }
-    if ($dirName -eq '\LVideos') {
+    if ($dirName -match 'LVideos') {
         $downloadLinksList = $basePage.Links | Where-Object { $_.href -match '.mp4$' } | Select-Object -ExpandProperty href
     }
     else {
@@ -224,6 +226,7 @@ function Get-Files($baseUri, $dirName, $downloadPath) {
     New-Item -Path ($downloadPath + $dirName) -ItemType Directory 
     $downloadPath = $downloadPath + $dirName
     $index = 1
+    if ($platform -eq 'Unix') { $regexForSlash = '/' } else { $regexForSlash = '//' }
     foreach ($downloadLink in $downloadLinksList) {
         if ($downloadLink -match '/courses/') {
             $downloadLink = 'https://ocw.mit.edu' + $downloadLink
@@ -234,7 +237,7 @@ function Get-Files($baseUri, $dirName, $downloadPath) {
         }
         $files += @{
             Uri     = $downloadLink
-            outFile = $downloadPath + '\' + ($dirName -split '\\')[1] + ' ' + ($index++) + $extension
+            outFile = $downloadPath + $slash + ($dirName -split $regexForSlash)[1] + ' ' + ($index++) + $extension
         }
     }
     $jobs = @()
@@ -252,7 +255,7 @@ function Get-Files($baseUri, $dirName, $downloadPath) {
                 }
             }
         }
-        Write-Host ($dirName -split '\\')[1] "downloads in progress..." -ForegroundColor DarkYellow
+        Write-Host ($dirName -split $regexForSlash)[1] "downloads in progress..." -ForegroundColor DarkYellow
     
         # prevents from logging job objects on screen
         $waitJobLog = Wait-Job -Job $jobs
@@ -261,12 +264,12 @@ function Get-Files($baseUri, $dirName, $downloadPath) {
         foreach ($job in $jobs) {
             $results += Receive-Job -Job $job
         }
-        Write-Host  ($dirName -split '\\')[1] "downloads finished" -ForegroundColor Green
+        Write-Host  ($dirName -split $regexForSlash)[1] "downloads finished" -ForegroundColor Green
     }
     # Windows PowerShell does not support Thread Jobs
     else {
-        Write-Host ($dirName -split '\\')[1] "downloads in progress..." -ForegroundColor DarkYellow
-        $task = ($dirName -split '\\')[1]
+        Write-Host ($dirName -split $regexForSlash)[1] "downloads in progress..." -ForegroundColor DarkYellow
+        $task = ($dirName -split $regexForSlash)[1]
         try {
             $index = 1
             foreach ($file in $files) {
@@ -274,7 +277,7 @@ function Get-Files($baseUri, $dirName, $downloadPath) {
                 Write-Progress -Activity "$task Downloading" -Status "$progress% complete" -PercentComplete $progress
                 Invoke-WebRequest $file['Uri'] -OutFile $file['outFile']    
             }
-            Write-Host  ($dirName -split '\\')[1] "downloads finished" -ForegroundColor Green
+            Write-Host  ($dirName -split $regexForSlash)[1] "downloads finished" -ForegroundColor Green
         }
         catch {
             Show-Exception($_.Exception.Message)
@@ -284,7 +287,7 @@ function Get-Files($baseUri, $dirName, $downloadPath) {
 
 function Get-LVideos($downloadPath) {
     try {
-        Get-Files ($link + 'resources/lecture-videos/') '\LVideos' $downloadPath
+        Get-Files ($link + 'resources/lecture-videos/') ($slash + 'LVideos') $downloadPath
     }
     catch {
         Show-Error("Error in dowloading Lecture Videos")
@@ -294,7 +297,7 @@ function Get-LVideos($downloadPath) {
 
 function Get-Assignments($downloadPath) {
     try {
-        Get-Files ($link + 'resources/assignments/') '\Assignments' $downloadPath
+        Get-Files ($link + 'resources/assignments/') ($slash + 'Assignments') $downloadPath
     }
     catch {
         Show-Error("Error in downloading Assignments")
@@ -304,7 +307,7 @@ function Get-Assignments($downloadPath) {
 
 function Get-Exams($downloadPath) {
     try {
-        Get-Files ($link + 'resources/exams/') '\Exams' $downloadPath
+        Get-Files ($link + 'resources/exams/') ($slash + 'Exams') $downloadPath
     }
     catch {
         Show-Error("Error in downloading Exams")
@@ -314,7 +317,7 @@ function Get-Exams($downloadPath) {
 
 function Get-LNotes($downloadPath) {
     try {
-        Get-Files ($link + 'resources/lecture-notes/') '\LNotes' $downloadPath
+        Get-Files ($link + 'resources/lecture-notes/') ($slash + 'LNotes') $downloadPath
     }
     catch {
         Show-Error('Error in downloading LNotes')
@@ -426,7 +429,7 @@ if ($link -match 'https://ocw\.mit\.edu/courses') {
     try {
 
         Import-Resoruces($userResponse)
-        Invoke-Item $userResponse['inputPath']
+        # Invoke-Item $userResponse['inputPath']
     }
     catch {
         Show-Exception($_.Exception.Message)
