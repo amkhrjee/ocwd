@@ -233,7 +233,7 @@ function Get-Files($baseUri, $dirName, $downloadPath) {
     }
     $jobs = @()
     
-    if ($PSVersionTable.Platform -eq 'Core') {
+    if ($PSVersionTable.PSEdition -eq 'Core') {
         foreach ($file in $files) {
 
             $jobs += Start-ThreadJob -Name $file.OutFile -ScriptBlock {
