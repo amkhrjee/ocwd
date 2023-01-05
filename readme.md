@@ -22,8 +22,8 @@ All recent versions of Windows 10 & 11 already come with Windows PowerShell inst
 If you have PowerShell installed, skip to the `ocwd` installation script.
 
 <details>
-<summary>   
- PowerShell Installation Guide 
+<summary>
+ <h3>PowerShell Installation Guide</h3> 
 </summary>
 PowerShell comes in two flavours - PowerShell Windows and PowerShell-Core. You are recommened to download PS-Core, as it is the one in active development by Microsoft and thus have the latest features. `ocwd` downloads work faster with PS-Core (thanks to multi-threading!)
 
