@@ -87,10 +87,12 @@ That's it! You have now installed Windows PowerShell on your system. You can sta
 </details>
 
 
-`ocwd` is currently available via Microsoft's [PSGallery](https://www.powershellgallery.com/packages/ocwd/1.1.1). If you have installed external scriipts before, you can skip to the installation script, otherwise, open PowerShell in Administrator Mode and paste the following: 
+`ocwd` is currently available via Microsoft's [PSGallery](https://www.powershellgallery.com/packages/ocwd/1.1.1). If you have installed external scripts before, you can skip to the installation script, otherwise, open PowerShell in Administrator Mode and paste the following in order: 
 
 ```ps1
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned
+```
+```ps1
 Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
 ```
 This will install `ocwd` to your system:
@@ -99,6 +101,16 @@ Install-Script -Name ocwd
 ```
 
 After the installation is over, you are suggested to close and reopen your terminal for reloaing the shell.
+
+## Usage
+There are two ways to use `ocwd`:
+```ps1
+ocwd <your_link_here>
+```
+or just type in the command:
+```ps1
+ocwd
+```
 ## Demo 
 <!-- <img src="https://i.imgur.com/ODutHXm.gif" /> -->
 

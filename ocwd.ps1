@@ -1,6 +1,6 @@
 <#PSScriptInfo
 
-.VERSION 1.3.1
+.VERSION 1.3.2
 
 .GUID a31639e2-a8ab-4a29-9fed-66d5b5f9e1e9
 
@@ -115,7 +115,13 @@ function Set-ResourceList($downloadsPagelink) {
 function Show-Resources {
     if ($resList.Length -ne 0) {
         Write-Host "::::::::::::::::::::::::::::::::"
-        Write-Host "╰(*°▽°*)╯ Resources Available" -ForegroundColor Green
+        if ($PSVersionTable.PSEdition -eq 'Desktop') {
+
+            Write-Host "--------Resources Available--------" -ForegroundColor Green
+        }
+        else {
+            Write-Host "╰(*°▽°*)╯ Resources Available" -ForegroundColor Green
+        }
         Write-Host "::::::::::::::::::::::::::::::::"   
         $index = 0
         foreach ($res in $resList) {
@@ -392,7 +398,13 @@ if ($link -match 'https://ocw\.mit\.edu/courses') {
         }
         Exit
     }
-    Write-Host "╰(*°▽°*)╯ Course Found" -ForegroundColor DarkGreen #make this more useful
+    if ($PSVersionTable.PSEdition -eq 'Desktop') {
+
+        Write-Host "--------Course Found--------" -ForegroundColor DarkGreen #make this more useful
+    }
+    else {
+        Write-Host "╰(*°▽°*)╯ Course Found" -ForegroundColor DarkGreen #make this more useful
+    }
     Write-Host ":::::::::::::::::::::::::::::::::::"
     $details = Get-Details
     Show-Details($details)
