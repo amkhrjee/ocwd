@@ -30,7 +30,6 @@
 
 .RELEASENOTES
 
-
 .PRIVATEDATA
 
 .DESCRIPTION Downloads MIT OCW course resources 
@@ -233,7 +232,8 @@ function Get-Files($baseUri, $dirName, $downloadPath) {
         }
     }
     $jobs = @()
-    try {
+    
+    if ($PSVersionTable.Platform -eq 'Core') {
         foreach ($file in $files) {
 
             $jobs += Start-ThreadJob -Name $file.OutFile -ScriptBlock {
@@ -246,20 +246,29 @@ function Get-Files($baseUri, $dirName, $downloadPath) {
                 }
             }
         }
-    }
-    catch {
-        # Opportunity for Windows Powershell compatibility
-    }
-
-    Write-Host ($dirName -split '\\')[1] "downloads in progress..." -ForegroundColor DarkYellow
+        Write-Host ($dirName -split '\\')[1] "downloads in progress..." -ForegroundColor DarkYellow
     
-    $waitJobLog = Wait-Job -Job $jobs
-
-    $results = @()
-    foreach ($job in $jobs) {
-        $results += Receive-Job -Job $job
+        $waitJobLog = Wait-Job -Job $jobs
+    
+        $results = @()
+        foreach ($job in $jobs) {
+            $results += Receive-Job -Job $job
+        }
+        Write-Host  ($dirName -split '\\')[1] "downloads finished" -ForegroundColor Green
     }
-    Write-Host  ($dirName -split '\\')[1] "downloads finished" -ForegroundColor Green
+    # Windows PowerShell does not support Thread Jobs
+    else {
+        Write-Host ($dirName -split '\\')[1] "downloads in progress..." -ForegroundColor DarkYellow
+        try {
+            foreach ($file in $files) {
+                Invoke-WebRequest $file['Uri'] -OutFile $file['outFile']
+            }
+            Write-Host  ($dirName -split '\\')[1] "downloads finished" -ForegroundColor Green
+        }
+        catch {
+            Show-Exception($_.Exception.Message)
+        }
+    }
 }
 
 function Get-LVideos($downloadPath) {
