@@ -13,17 +13,15 @@
 ## What does `ocwd` do?
 `ocwd` is a command line utility that downloads resources from any [MIT OCW](https://ocw.mit.edu/) course to any storage path provided by you. The resources are available under the creative commons license and MIT reserves all rights to the content. This tool simply scrapes the OCW website for resources and offers a simple and easy way for downloading any course resource for offline use.
 ## Installation Guide
-> This script only works on 🪟Windows (🐧Linux + 🍎MacOS support coming soon!)
 
-`ocwd` works with both Windows PowerShell and the cross-platform PowerShell-Core. 
+### Windows
+`ocwd` works with both [Windows PowerShell](https://learn.microsoft.com/en-us/powershell/scripting/windows-powershell/install/installing-windows-powershell?view=powershell-7.3) and the cross-platform [PowerShell-Core](https://learn.microsoft.com/en-us/powershell/scripting/overview?view=powershell-7.3). 
 
 All recent versions of Windows 10 & 11 already come with Windows PowerShell installed (search for `PowerShell` using Windows Search to find out whether you have it or not). However, you can also follow the installation guides provided here in case you don't have PowerShell installed. 
 
-If you have PowerShell installed, skip to the `ocwd` installation script.
-
 <details>
 <summary>
- <h3>PowerShell Installation Guide</h3> 
+ <h3>PowerShell Installation Guide for Windows</h3> 
 </summary>
 PowerShell comes in two flavours - PowerShell Windows and PowerShell-Core. You are recommened to download PS-Core, as it is the one in active development by Microsoft and thus have the latest features. `ocwd` downloads work faster with PS-Core (thanks to multi-threading!)
 
@@ -86,6 +84,13 @@ This should display information about the version of Windows PowerShell that you
 That's it! You have now installed Windows PowerShell on your system. You can start using Windows PowerShell by typing commands into the terminal window.
 </details>
 
+### Linux
+The cross-platform PowerShell-Core is required for this. The official and detailed installation guide can be found [here](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-linux?view=powershell-7.3). 
+
+### MacOS
+The detailed installation guide for PowerShell-Core is given [here](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-macos?view=powershell-7.3) by Microsoft.
+
+If you have PowerShell installed, we can proceed to install `ocwd`.
 
 `ocwd` is currently available via Microsoft's [PSGallery](https://www.powershellgallery.com/packages/ocwd/1.1.1). If you have installed external scripts before, you can skip to the installation script, otherwise, open PowerShell in Administrator Mode and paste the following in order: 
 
@@ -101,6 +106,8 @@ Install-Script -Name ocwd
 ```
 
 After the installation is over, you are suggested to close and reopen your terminal for reloaing the shell.
+
+
 
 ## Usage
 There are two ways to use `ocwd`:
