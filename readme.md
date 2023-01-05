@@ -90,6 +90,8 @@ The cross-platform PowerShell-Core is required for this. The official and detail
 ### MacOS
 The detailed installation guide for PowerShell-Core is given [here](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-macos?view=powershell-7.3) by Microsoft.
 
+---
+
 If you have PowerShell installed, we can proceed to install `ocwd`.
 
 `ocwd` is currently available via Microsoft's [PSGallery](https://www.powershellgallery.com/packages/ocwd/1.1.1). If you have installed external scripts before, you can skip to the installation script, otherwise, open PowerShell in Administrator Mode and paste the following in order: 
