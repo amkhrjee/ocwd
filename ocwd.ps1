@@ -1,6 +1,6 @@
 <#PSScriptInfo
 
-.VERSION 1.2.1
+.VERSION 1.3.1
 
 .GUID a31639e2-a8ab-4a29-9fed-66d5b5f9e1e9
 
@@ -8,13 +8,13 @@
 
 .COMPANYNAME
 
-.SYNOPSIS Downloads resources from the MIT OpenCourseWare repository.
+.SYNOPSIS Downloads resources from the MIT OpenCourseWare repository
 
 .EXAMPLE ocwd <link to a course homepage>
 
-.COPYRIGHT Aniruddha Mukherjee
+.COPYRIGHT (C) Aniruddha Mukherjee 2023
 
-.TAGS PSEdition_Core Windows
+.TAGS PSEdition_Core Windows PSEdition_Desktop
 
 .LICENSEURI https://www.gnu.org/licenses/gpl-3.0.en.html
 
@@ -28,7 +28,7 @@
 
 .EXTERNALSCRIPTDEPENDENCIES
 
-.RELEASENOTES
+.RELEASENOTES Last edited: 5 Jan 2023
 
 .PRIVATEDATA
 
