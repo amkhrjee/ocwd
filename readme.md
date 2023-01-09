@@ -1,7 +1,6 @@
 <p align="center">
-<!--<img src="scoop.png" alt="Long live Scoop!"/>-->
     <h1 align="center">ocwd</h1>
-    <p>Bulk download course resources at one click🗃️</p>
+    <p align = "center">Bulk download courses at one click🖱️</p>
 </p>
 <p align="center" >
    <img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/amkhrjee/ocwd">
