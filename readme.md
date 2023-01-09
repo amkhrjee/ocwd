@@ -1,6 +1,7 @@
 <p align="center">
 <!--<img src="scoop.png" alt="Long live Scoop!"/>-->
     <h1 align="center">ocwd</h1>
+    <p>Bulk download course resources at one click🗃️</p>
 </p>
 <p align="center" >
    <img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/amkhrjee/ocwd">
@@ -11,7 +12,9 @@
 </p>
 
 ## What does `ocwd` do?
-`ocwd` is a command line utility that downloads resources from any [MIT OCW](https://ocw.mit.edu/) course to any storage path provided by you. The resources are available under the creative commons license and MIT reserves all rights to the content. This tool simply scrapes the OCW website for resources and offers a simple and easy way for downloading any course resource for offline use.
+`ocwd` is a command line utility that downloads resources at bulk from any [MIT OCW](https://ocw.mit.edu/) course to any storage path provided by you, with just one key press! 
+
+The resources are available under the creative commons license and MIT reserves all rights to the content. This tool simply scrapes the OCW website for resources and offers a simple and easy way for downloading any course resource for offline use.
 ## Installation Guide
 
 ### Windows
@@ -107,7 +110,7 @@ This will install `ocwd` to your system:
 Install-Script -Name ocwd
 ```
 
-After the installation is over, you are suggested to close and reopen your terminal for reloaing the shell.
+After the installation is over, you are suggested to close and reopen your terminal for reloading the shell.
 
 
 
