@@ -162,6 +162,9 @@ function Get-Options {
             throw "Invalid index"
         }
         Default {
+            if (($userInputs -eq 'All') -or ($userInputs -eq 'all')) {
+                return 'all'
+            }
             $targetIndices = @()
             $userInputs = $userInputs -split ','
             foreach ($userInput in $userInputs) {
@@ -180,6 +183,7 @@ function Get-Options {
 function Get-Path {
     Write-Host "Enter the download path: " -ForegroundColor Cyan
     Write-Host "=>Example: C:\Users\john\OneDrive\Desktop"
+    Write-Host "=>Example: Course (💡Make folder in the current directory)"
     $inputPath = Read-Host "Input" 
     if ($inputPath.Length -eq 0) {
         throw "Path cannot be empty string"
@@ -223,7 +227,11 @@ function Get-Files($baseUri, $dirName, $downloadPath) {
     }
     
     $files = @()
-    New-Item -Path ($downloadPath + $dirName) -ItemType Directory 
+
+    # checks whether the directory exists and creates it of it doesn't
+    if (!(Test-Path -Path ($downloadPath + $dirName))) {
+        New-Item -Path ($downloadPath + $dirName) -ItemType Directory
+    }
     $downloadPath = $downloadPath + $dirName
     $index = 1
     if ($platform -eq 'Unix') { $regexForSlash = '/' } else { $regexForSlash = '//' }
@@ -237,14 +245,16 @@ function Get-Files($baseUri, $dirName, $downloadPath) {
         }
         $files += @{
             Uri     = $downloadLink
-            outFile = $downloadPath + $slash + ($dirName -split $regexForSlash)[1] + ' ' + ($index++) + $extension
+            outFile = $downloadPath + $slash + ($dirName -split $regexForSlash)[0] + ' ' + ($index++) + $extension
         }
     }
     $jobs = @()
     
     if ($PSVersionTable.PSEdition -eq 'Core') {
+        $index = 1
+        Write-Host "Downloads in progress..." -ForegroundColor DarkYellow
         foreach ($file in $files) {
-
+            Write-Host ("💾 Downloading " + ($dirName.Substring(1)) + ' ' + ($index++))
             $jobs += Start-ThreadJob -Name $file.OutFile -ScriptBlock {
                 $params = $using:file
                 try {
@@ -255,16 +265,18 @@ function Get-Files($baseUri, $dirName, $downloadPath) {
                 }
             }
         }
-        Write-Host ($dirName -split $regexForSlash)[1] "downloads in progress..." -ForegroundColor DarkYellow
     
-        # prevents from logging job objects on screen
-        $waitJobLog = Wait-Job -Job $jobs
+        # Waiting for all jobs to finish
+        Wait-Job -Job $jobs
     
         $results = @()
         foreach ($job in $jobs) {
+            Write-Host "🟩" -NoNewline
             $results += Receive-Job -Job $job
+            Remove-Job $job
         }
-        Write-Host  ($dirName -split $regexForSlash)[1] "downloads finished" -ForegroundColor Green
+        Write-Host ' '
+        Write-Host  ($dirName -split $regexForSlash)[1] "Downloads finished!" -ForegroundColor Green
     }
     # Windows PowerShell does not support Thread Jobs
     else {
@@ -374,7 +386,8 @@ function Import-Resoruces($userResponse) {
     }
 }
 
-# driver
+# Starting point
+
 if ($link.Length -eq 0 ) {
     Write-Host "ocwd Copyright (C) 2023 Aniruddha Mukherjee"
     Write-Host "This program comes with ABSOLUTELY NO WARRANTY"
@@ -394,10 +407,10 @@ if ($link -match 'https://ocw\.mit\.edu/courses') {
         $StatusCode = [System.Convert]::ToDecimal($StatusCode)
         Show-Error("Exited with error code $StatusCode")
         if (($StatusCode -ge 300) -and ($StatusCode -lt 400)) {
-            Show-Error("The URL provided does not exist")
+            Show-Error("The URL provided does not exist.")
         }
         elseif (($StatusCode -ge 400) -and ($StatusCode -lt 600)) {
-            Show-Error("Invalid URL or No internet")
+            Show-Error("Invalid URL or no internet.")
         }
         Exit
     }
@@ -429,6 +442,7 @@ if ($link -match 'https://ocw\.mit\.edu/courses') {
     try {
 
         Import-Resoruces($userResponse)
+        # This opens the file explorer of the respective OS
         Invoke-Item $userResponse['inputPath']
     }
     catch {
