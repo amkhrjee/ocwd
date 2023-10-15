@@ -274,12 +274,34 @@ function Get-Files($baseUri, $dirName, $downloadPath) {
         }
     }
     $jobs = @()
+
+    $downloadOption = 0
+
+    if ($PSVersionTable.PSEdition -eq 'Core') {
+        Write-Host "How would you like to download the files?" -ForegroundColor DarkYellow
+        Write-Host "1.  Serially [downloads start one after another]" -ForegroundColor Green
+        Write-Host "2.  Paralleley [downloads start all at once]" -ForegroundColor Green
+        $correctIputGiven = $false
+        while (!$correctIputGiven) {
+            $downloadOption = Read-Host "Enter option (1 or 2)"
+            if (($downloadOption -eq 1) -or ($downloadOption -eq 2)) {
+                $correctIputGiven = $true
+            }
+            else {
+                Show-Error "Invalid input"
+            }
+        }
+    }
+    else {
+        $downloadOption = 1
+    }
+    
     
     # Poweshell Core supports threds jobs
 
-    if ($PSVersionTable.PSEdition -eq 'Core') {
+    if ($downloadOption -eq 2) {
         $index = 1
-        Write-Host "Downloads in progress..." -ForegroundColor DarkYellow
+        Write-Host "🔁 Downloads in progress..." -ForegroundColor DarkYellow
         foreach ($file in $files) {
             Write-Host ("💾 Downloading " + ($dirName.Substring(1)) + ' ' + ($index++))
             $jobs += Start-ThreadJob -Name $file.OutFile -ScriptBlock {
@@ -294,30 +316,35 @@ function Get-Files($baseUri, $dirName, $downloadPath) {
         }
     
         # Waiting for all jobs to finish
-        Wait-Job -Job $jobs
+        
+        while ((Wait-Job -Job $jobs).State -ne "Completed") {
+            # This doesn't let the log show up
+        }
     
         $results = @()
         foreach ($job in $jobs) {
-            Write-Host "🟩" -NoNewline
             $results += Receive-Job -Job $job
             Remove-Job $job
         }
         Write-Host ' '
-        Write-Host  ($dirName -split $regexForSlash)[1] "Downloads finished!" -ForegroundColor Green
+        Write-Host  ($dirName -split $regexForSlash)[1] "✅ Downloads finished!" -ForegroundColor Green
     }
 
     # Windows PowerShell does not support Thread Jobs
     else {
-        Write-Host ($dirName -split $regexForSlash)[1] "downloads in progress..." -ForegroundColor DarkYellow
+        Write-Host ($dirName -split $regexForSlash)[1] "🔁 Downloads in progress..." -ForegroundColor DarkYellow
         $task = ($dirName -split $regexForSlash)[1]
         try {
             $index = 1
             foreach ($file in $files) {
                 $progress = [System.Convert]::ToInt16((($index++) / $files.Length) * 100)
                 Write-Progress -Activity "$task Downloading" -Status "$progress% complete" -PercentComplete $progress
-                Invoke-WebRequest $file['Uri'] -OutFile $file['outFile']    
+                Write-Host ''
+                $ProgressPreference = 'SilentlyContinue'
+                Invoke-WebRequest $file['Uri'] -OutFile $file['outFile']
+                $ProgressPreference = 'Continue'
             }
-            Write-Host  ($dirName -split $regexForSlash)[1] "downloads finished" -ForegroundColor Green
+            Write-Host  ($dirName -split $regexForSlash)[1] "✅ Downloads finished!" -ForegroundColor Green
         }
         catch {
             Show-Exception($_.Exception.Message)
@@ -372,19 +399,19 @@ function Import-Resoruces($userResponse) {
         foreach ($res in $resList) {
             switch ($res) {
                 'Lecture Videos' {
-                    Write-Host "Downloading Lecture Videos..." -ForegroundColor Yellow
+                    Write-Host "✨ Fetching Lecture Videos" -ForegroundColor Yellow
                     Get-LVideos($downloadPath)
                 }
                 'Assignments' {
-                    Write-Host "Downloading Assignments..." -ForegroundColor Yellow
+                    Write-Host "✨ Fetching Assignments" -ForegroundColor Yellow
                     Get-Assignments($downloadPath)
                 }
                 'Exams' {
-                    Write-Host "Downloading Exams..." -ForegroundColor Yellow
+                    Write-Host "✨ Fetching Exams" -ForegroundColor Yellow
                     Get-Exams($downloadPath)
                 }
                 'Lecture Notes' {
-                    Write-Host "Download Lecture Notes..." -ForegroundColor Yellow
+                    Write-Host "✨ Fetching Lecture Notes" -ForegroundColor Yellow
                     Get-LNotes($downloadPath)
                 }
             }
