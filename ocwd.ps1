@@ -48,6 +48,11 @@ $patterns = @{
     instructorPattern        = '<a class="course-info-instructor strip-link-offline"  href=".*">(?<instructor>.*)</a>'
     additionalDetailsPattern = '<span class="course-number-term-detail">(?<other>.*)</span>'
 }
+
+function Show-Progress() {
+    //
+}
+
 function Show-Error($msg) {
     Write-Host "Error:" $msg -ForegroundColor Red
 }
@@ -143,38 +148,54 @@ function Get-Options {
     Write-Host "=>Use commas for multiple indices"  -ForegroundColor Gray
     Write-Host "=>Enter A for downloading all resources" -ForegroundColor Gray
     Write-Host "=>Example: 1,2"
-    $userInputs = Read-Host "Input"
-    switch ($userInputs.Length) {
-        0 {
-            throw "Input cannot be empty"
-        }
-        1 {
-            if (($userInputs -ne 'a') -or ($userInputs -ne 'A')) {
-                if (([System.Convert]::ToDecimal($userInputs) -lt 1) -or ([System.Convert]::ToDecimal($userInputs) -gt $resList.Length)) {
-                    throw "Invalid index"
+    $correctInputGiven = $false
+    while (!$correctInputGiven) {
+        $userInputs = Read-Host "Input"
+
+        switch ($userInputs.Length) {
+            0 {
+                Show-Error "Input cannot be empty"
+            }
+            1 {
+                if (($userInputs -ne 'a') -or ($userInputs -ne 'A')) {
+                    if (([System.Convert]::ToDecimal($userInputs) -lt 1) -or ([System.Convert]::ToDecimal($userInputs) -gt $resList.Length)) {
+                        Show-Error "Invalid index"
+                    }
+                    else {
+                        $correctInputGiven = $true
+                    }
+                }
+                elseif (($userInputs -eq 'a') -or ($userInputs -eq 'A')) {
+                    return 'all'
                 }
             }
-            elseif (($userInputs -eq 'a') -or ($userInputs -eq 'A')) {
-                return 'all'
+            2 {
+                Show-Error "Invalid index"
             }
-        }
-        2 {
-            throw "Invalid index"
-        }
-        Default {
-            if (($userInputs -eq 'All') -or ($userInputs -eq 'all')) {
-                return 'all'
-            }
-            $targetIndices = @()
-            $userInputs = $userInputs -split ','
-            foreach ($userInput in $userInputs) {
-                if (([System.Convert]::ToDecimal($userInput) -lt 0) -or ([System.Convert]::ToDecimal($userInput) -gt $resList.Length)) {
-                    throw "One or more of the indices invalid"
+            Default {
+                if (($userInputs -eq 'All') -or ($userInputs -eq 'all')) {
+                    return 'all'
                 }
-                $targetIndices += ($userInput - 1)
-        
+                $targetIndices = @()
+                $userInputs = $userInputs -split ','
+                foreach ($userInput in $userInputs) {
+                    if (([System.Convert]::ToDecimal($userInput) -lt 0) -or ([System.Convert]::ToDecimal($userInput) -gt $resList.Length)) {
+                        $correctInputGiven = $false
+                        Show-Error "One or more of the indices invalid"
+                        break   
+                    }
+                    else {
+                        $correctInputGiven = $true
+                        $targetIndices += ($userInput - 1)
+                    }
+                }
+                if ($correctInputGiven) {
+                    return $targetIndices
+                }
+                else {
+                    break
+                }
             }
-            return $targetIndices
         }
     }
     return $userInputs - 1
@@ -184,21 +205,25 @@ function Get-Path {
     Write-Host "Enter the download path: " -ForegroundColor Cyan
     Write-Host "=>Example: C:\Users\john\OneDrive\Desktop"
     Write-Host "=>Example: Course (💡Make folder in the current directory)"
-    $inputPath = Read-Host "Input" 
-    if ($inputPath.Length -eq 0) {
-        throw "Path cannot be empty string"
+    $correctInputGiven = $false
+    while (!$correctInputGiven) {
+        $inputPath = Read-Host "Input" 
+        if ($inputPath.Length -eq 0) {
+            Show-Error "Path cannot be empty string"
+        }
+        # elseif (!(Test-Path $inputPath)) {
+        #     Show-Error "Not a valid path"
+        # }
+        else {
+            $correctInputGiven = $true
+        }
     }
     return $inputPath
 }
 
 function Get-Response {
-    try {
-        $userInputs = Get-Options
-    }
-    catch {
-        Show-Error($_.Exception.InnerException.Message)
-        Exit
-    }
+    $userInputs = Get-Options
+    
     try {
         $inputPath = Get-Path
     }
@@ -228,7 +253,7 @@ function Get-Files($baseUri, $dirName, $downloadPath) {
     
     $files = @()
 
-    # checks whether the directory exists and creates it of it doesn't
+    # checks whether the directory exists and creates it if it doesn't
     if (!(Test-Path -Path ($downloadPath + $dirName))) {
         New-Item -Path ($downloadPath + $dirName) -ItemType Directory
     }
@@ -250,6 +275,8 @@ function Get-Files($baseUri, $dirName, $downloadPath) {
     }
     $jobs = @()
     
+    # Poweshell Core supports threds jobs
+
     if ($PSVersionTable.PSEdition -eq 'Core') {
         $index = 1
         Write-Host "Downloads in progress..." -ForegroundColor DarkYellow
@@ -278,6 +305,7 @@ function Get-Files($baseUri, $dirName, $downloadPath) {
         Write-Host ' '
         Write-Host  ($dirName -split $regexForSlash)[1] "Downloads finished!" -ForegroundColor Green
     }
+
     # Windows PowerShell does not support Thread Jobs
     else {
         Write-Host ($dirName -split $regexForSlash)[1] "downloads in progress..." -ForegroundColor DarkYellow
