@@ -1,6 +1,6 @@
 <#PSScriptInfo
 
-.VERSION 2.4.2
+.VERSION 2.5.0
 
 .GUID a31639e2-a8ab-4a29-9fed-66d5b5f9e1e9
 
@@ -28,11 +28,11 @@
 
 .EXTERNALSCRIPTDEPENDENCIES
 
-.RELEASENOTES Last edited: 5 Jan 2023
+.RELEASENOTES Last edited: 15 Oct 2023
 
 .PRIVATEDATA
 
-.DESCRIPTION Downloads MIT OCW course resources 
+.DESCRIPTION 🗃️ Bulk Download MIT OCW Course Resources 
 
 #>
 
@@ -47,10 +47,6 @@ $patterns = @{
     titlePattern             = '<title>(?<title>.*)</title>'
     instructorPattern        = '<a class="course-info-instructor strip-link-offline"  href=".*">(?<instructor>.*)</a>'
     additionalDetailsPattern = '<span class="course-number-term-detail">(?<other>.*)</span>'
-}
-
-function Show-Progress() {
-    //
 }
 
 function Show-Error($msg) {
