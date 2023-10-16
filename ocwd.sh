@@ -85,7 +85,29 @@ get_options() {
                 fi
             fi
             ;;
-        *) echo "Hello" ;;
+        2) echo "Invalid Index" ;;
+        *)
+            if [[ $option == 'All' || $option == 'all' ]]; then
+                echo "You want to download everything"
+                correctInputFlag=1
+            else
+                IFS=',' read -ra tempTargetIndices <<<"$option"
+                index=0
+                for element in "${tempTargetIndices[@]}"; do
+                    if ((element > 0 && element <= ${#resourceList[@]})); then
+                        targetIndices["$index"]="$element"
+                        echo "You want to download $element"
+                        correctInputFlag=1
+                        ((index++))
+                    else
+                        correctInputFlag=0
+                        echo "E: Invalid index: $element"
+                        break
+                    fi
+                done
+            fi
+
+            ;;
         esac
     done
 
@@ -120,6 +142,7 @@ if [[ $link == "https://ocw.mit.edu/courses/"* ]]; then
         show_additional_details "$pageHtml"
         resourceList=()
         show_resources "$link"
+        targetIndices=()
         get_options
     fi
 fi
