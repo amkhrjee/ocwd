@@ -6,6 +6,7 @@ trim() {
 }
 
 show_details() {
+    echo "::::::::::::::::::::::::::::::::"
     echo "╰(*°▽°*)╯ Course Found"
     echo ":::::::::::::::::::::::::::::::::::"
     # Title
@@ -39,6 +40,32 @@ show_additional_details() {
 
 show_resources() {
     echo "::::::::::::::::::::::::::::::::"
+    echo "╰(*°▽°*)╯ Resources Available"
+    echo "::::::::::::::::::::::::::::::::"
+    download="download"
+    if [[ $1 =~ /$ ]]; then
+        downloadPageLink="$1$download/"
+    else
+        downloadPageLink="$1/download/"
+    fi
+    downloadPageHtml=$(wget "$downloadPageLink" -q -O -)
+    keys=("Lecture Videos" "Assignments" "Exams" "Lecture Notes")
+    index=0
+    resourceList=()
+    for key in "${keys[@]}"; do
+        if [[ "$downloadPageHtml" =~ $key ]]; then
+            resourceList["$index"]="$key"
+            ((index++))
+            echo "$index. $key"
+        fi
+    done
+}
+
+get_options() {
+    echo "Enter the index of the desired resource for download"
+    echo "=>Use commas for multiple indices"
+    echo "=>Enter A for downloading all resources"
+    echo "=>Example: 1,2"
 }
 
 # Starting point
@@ -68,5 +95,6 @@ if [[ $link == "https://ocw.mit.edu/courses/"* ]]; then
         pageHtml=$(wget "$link" -q -O -)
         show_details "$pageHtml"
         show_additional_details "$pageHtml"
+        show_resources "$link"
     fi
 fi
