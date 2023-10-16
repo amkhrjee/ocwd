@@ -121,7 +121,24 @@ get_options() {
 }
 
 get_files() {
-    # basePageHtml=
+    basePageHtml=$(wget "$1" -q -O -)
+    downloadUrls=$(echo "$basePageHtml" | grep -Eo 'href="[^"]+"')
+    downloadUrls=$(echo "$downloadUrls" | grep -o '"[^"]\+"')
+    downloadUrls=$(echo "$downloadUrls" | grep -oE '/[^"]+')
+
+    if [[ $2 == 'LVideos' ]]; then
+        downloadUrls=$(echo "$downloadUrls" | grep '.mp4$')
+    else
+        downloadUrls=$(echo "$downloadUrls" | grep '.pdf$')
+    fi
+    # echo "$downloadUrls"
+
+    # Converting the multi-line variable into a list
+    downloadUrlList=()
+    while IFS= read -r url; do
+        downloadUrlList+=("$url")
+    done <<<"$downloadUrls"
+
 }
 
 get_resources() {
