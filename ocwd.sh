@@ -74,31 +74,40 @@ get_options() {
         "0") echo "Input cannot be empty!" ;;
         "1")
             if [[ $option == 'a' || $option == 'A' ]]; then
-                echo "You want to download everything"
+                index=0
+                for item in "${resourceList[@]}"; do
+                    targetKeys["$index"]="$item"
+                    ((index++))
+                done
                 correctInputFlag=1
             else
                 if ((option > 0 && option <= ${#resourceList[@]})); then
-                    echo "You want to download $option"
+                    resourceIndex=$((option - 1))
+                    targetKeys["0"]="${resourceList["$resourceIndex"]}"
                     correctInputFlag=1
                 else
-                    echo "Invalid Index"
+                    echo "E: Invalid Index"
                 fi
             fi
             ;;
-        2) echo "Invalid Index" ;;
+        2) echo "E: Invalid Index" ;;
         *)
             if [[ $option == 'All' || $option == 'all' ]]; then
-                echo "You want to download everything"
+                index=0
+                for item in "${resourceList[@]}"; do
+                    targetKeys["$index"]="$item"
+                    ((index++))
+                done
                 correctInputFlag=1
             else
-                IFS=',' read -ra tempTargetIndices <<<"$option"
+                IFS=',' read -ra temptargetKeys <<<"$option"
                 index=0
-                for element in "${tempTargetIndices[@]}"; do
+                for element in "${temptargetKeys[@]}"; do
                     if ((element > 0 && element <= ${#resourceList[@]})); then
-                        targetIndices["$index"]="$element"
-                        echo "You want to download $element"
-                        correctInputFlag=1
+                        resourceIndex=$((element - 1))
+                        targetKeys["$index"]="${resourceList["$resourceIndex"]}"
                         ((index++))
+                        correctInputFlag=1
                     else
                         correctInputFlag=0
                         echo "E: Invalid index: $element"
@@ -106,11 +115,56 @@ get_options() {
                     fi
                 done
             fi
-
             ;;
         esac
     done
+}
 
+get_files() {
+    # basePageHtml=
+}
+
+get_resources() {
+    if [[ ! $link =~ /$ ]]; then
+        link="$link/"
+    fi
+    # Take directory path for the download
+    echo "Enter directory name or path (will be created if doesn't exist)"
+    echo "=>Example: IntroToAlgorithms"
+    echo "=>Example: courses/IntroToAlgorithms"
+    read -rep "Input: " inputPath
+    if [[ ! $inputPath =~ /$ ]]; then
+        inputPath="$inputPath/"
+    fi
+    for element in "${targetKeys[@]}"; do
+        case "$element" in
+        'Lecture Videos')
+            echo "✨ Fetching Lecture Videos"
+            augmentLink="resources/lecture-videos/"
+            directoryTitle="LVideos"
+            get_files "$link$augmentLink" "$inputPath$directoryTitle"
+            ;;
+        'Assignments')
+            echo "✨ Fetching Assignments"
+            augmentLink="resources/assignments/"
+            directoryTitle="Assignments"
+            get_files "$link$augmentLink" "$inputPath$directoryTitle"
+            ;;
+        'Exams')
+            echo "✨ Fetching Exams"
+            augmentLink="resources/exams/"
+            directoryTitle="Exams"
+            get_files "$link$augmentLink" "$inputPath$directoryTitle"
+            ;;
+        'Lecture Notes')
+            echo "✨ Fetching Lecture Notes"
+            augmentLink="resources/lecture-notes/"
+            directoryTitle="LNotes"
+            get_files "$link$augmentLink" "$inputPath$directoryTitle"
+            ;;
+        *) echo "E: Invalid type of resource" ;;
+        esac
+    done
 }
 
 # Starting point
@@ -142,7 +196,8 @@ if [[ $link == "https://ocw.mit.edu/courses/"* ]]; then
         show_additional_details "$pageHtml"
         resourceList=()
         show_resources "$link"
-        targetIndices=()
+        targetKeys=()
         get_options
+        get_resources
     fi
 fi
