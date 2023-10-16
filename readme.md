@@ -96,7 +96,7 @@ The detailed installation guide for PowerShell-Core is given [here](https://lear
 
 If you have PowerShell installed, we can proceed to install `ocwd`.
 
-`ocwd` is currently available via Microsoft's [PSGallery](https://www.powershellgallery.com/packages/ocwd/1.1.1). If you have installed external scripts before, you can skip to the installation script, otherwise, open PowerShell in Administrator Mode and paste the following in order: 
+`ocwd` is currently available via Microsoft's [PSGallery](https://www.powershellgallery.com/packages/ocwd/2.5.0). If you have installed external scripts before, you can skip to the installation script, otherwise, open PowerShell in Administrator Mode and paste the following in order: 
 
 ```ps1
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned
