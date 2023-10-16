@@ -51,7 +51,6 @@ show_resources() {
     downloadPageHtml=$(wget "$downloadPageLink" -q -O -)
     keys=("Lecture Videos" "Assignments" "Exams" "Lecture Notes")
     index=0
-    resourceList=()
     for key in "${keys[@]}"; do
         if [[ "$downloadPageHtml" =~ $key ]]; then
             resourceList["$index"]="$key"
@@ -66,6 +65,30 @@ get_options() {
     echo "=>Use commas for multiple indices"
     echo "=>Enter A for downloading all resources"
     echo "=>Example: 1,2"
+
+    correctInputFlag=0
+    while [ "$correctInputFlag" -ne 1 ]; do
+        read -rep "Input: " option
+
+        case ${#option} in
+        "0") echo "Input cannot be empty!" ;;
+        "1")
+            if [[ $option == 'a' || $option == 'A' ]]; then
+                echo "You want to download everything"
+                correctInputFlag=1
+            else
+                if ((option > 0 && option <= ${#resourceList[@]})); then
+                    echo "You want to download $option"
+                    correctInputFlag=1
+                else
+                    echo "Invalid Index"
+                fi
+            fi
+            ;;
+        *) echo "Hello" ;;
+        esac
+    done
+
 }
 
 # Starting point
@@ -95,6 +118,8 @@ if [[ $link == "https://ocw.mit.edu/courses/"* ]]; then
         pageHtml=$(wget "$link" -q -O -)
         show_details "$pageHtml"
         show_additional_details "$pageHtml"
+        resourceList=()
         show_resources "$link"
+        get_options
     fi
 fi
