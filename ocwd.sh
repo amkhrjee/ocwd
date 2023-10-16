@@ -1,21 +1,47 @@
 #!/usr/bin/bash
 
+trim() {
+    trimmed=$(awk '{$1=$1};1' <<<"$1")
+    echo "$trimmed"
+}
+
 show_details() {
     echo "╰(*°▽°*)╯ Course Found"
     echo ":::::::::::::::::::::::::::::::::::"
     # Title
     titleLine=$(echo "$1" | grep '<title>')
-    titleLine=$(awk '{$1=$1};1' <<<"$titleLine")
+    titleLine=$(trim "$titleLine")
     titleLine=$(echo "$titleLine" | sed -n 's/.*<title>\(.*\)<\/title>.*/\1/p')
     title=$(awk -F "|" '{print $1}' <<<"$titleLine")
     echo "- Title: $title"
 
     # Instructor
     instructorLine=$(echo "$1" | grep -m 1 '<a class="course-info-instructor strip-link-offline"  href=".*">')
-    instructorLine=$(awk '{$1=$1};1' <<<"$instructorLine")
+    instructorLine=$(trim "$instructorLine")
     instructorLine=$(echo "$instructorLine" | sed -n 's/.*<a[^>]*>\(.*\)<\/a>.*/\1/p')
     echo "- Instructor: $instructorLine"
 }
+
+show_additional_details() {
+    additionalDetailsLine=$(echo "$1" | grep '<span class="course-number-term-detail">')
+    additionalDetailsLine=$(trim "$additionalDetailsLine")
+    additionalDetails=$(echo "$additionalDetailsLine" | sed -n 's/.*<span[^>]*>\(.*\)<\/span>.*/\1/p')
+    courseId=$(echo "$additionalDetails" | awk -F "|" '{print $1}')
+    courseId=$(trim "$courseId")
+    courseSem=$(echo "$additionalDetails" | awk -F "|" '{print $2}')
+    courseSem=$(trim "$courseSem")
+    courseLevel=$(echo "$additionalDetails" | awk -F "|" '{print $3}')
+    courseLevel=$(trim "$courseLevel")
+    echo "- ID: $courseId"
+    echo "- Semester: $courseSem"
+    echo "- Level: $courseLevel"
+}
+
+show_resources() {
+    echo "::::::::::::::::::::::::::::::::"
+}
+
+# Starting point
 
 if [ $# -eq 0 ]; then
     echo "ocwd Copyright (C) 2023 Aniruddha Mukherjee"
@@ -41,5 +67,6 @@ if [[ $link == "https://ocw.mit.edu/courses/"* ]]; then
     if [ "$http_status" -eq 200 ]; then
         pageHtml=$(wget "$link" -q -O -)
         show_details "$pageHtml"
+        show_additional_details "$pageHtml"
     fi
 fi
