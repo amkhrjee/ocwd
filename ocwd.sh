@@ -48,16 +48,22 @@ show_resources() {
     else
         downloadPageLink="$1/download/"
     fi
-    downloadPageHtml=$(wget "$downloadPageLink" -q -O -)
-    keys=("Lecture Videos" "Assignments" "Exams" "Lecture Notes")
-    index=0
-    for key in "${keys[@]}"; do
-        if [[ "$downloadPageHtml" =~ $key ]]; then
-            resourceList["$index"]="$key"
-            ((index++))
-            echo "$index. $key"
-        fi
-    done
+    http_status=$(wget --spider --server-response "$downloadPageLink" 2>&1 | awk '/HTTP\/1.1/{print $2}' | tail -1)
+    if [ "$http_status" -eq 200 ]; then
+        downloadPageHtml=$(wget "$downloadPageLink" -q -O -)
+        keys=("Lecture Videos" "Assignments" "Exams" "Lecture Notes")
+        index=0
+        for key in "${keys[@]}"; do
+            if [[ "$downloadPageHtml" =~ $key ]]; then
+                resourceList["$index"]="$key"
+                ((index++))
+                echo "$index. $key"
+            fi
+        done
+    else
+        echo "E: Error $http_status, could not fetch reosources"
+        exit 1
+    fi
 }
 
 get_options() {
@@ -121,66 +127,71 @@ get_options() {
 }
 
 get_files() {
-    basePageHtml=$(wget "$1" -q -O -)
-    downloadUrls=$(echo "$basePageHtml" | grep -Eo 'href="[^"]+"')
-    downloadUrls=$(echo "$downloadUrls" | grep -o '"[^"]\+"')
-    downloadUrls=$(echo "$downloadUrls" | grep -oE '/[^"]+')
+    http_status=$(wget --spider --server-response "$1" 2>&1 | awk '/HTTP\/1.1/{print $2}' | tail -1)
+    if [ "$http_status" -eq 200 ]; then
+        basePageHtml=$(wget "$1" -q -O -)
+        downloadUrls=$(echo "$basePageHtml" | grep -Eo 'href="[^"]+"')
+        downloadUrls=$(echo "$downloadUrls" | grep -o '"[^"]\+"')
+        downloadUrls=$(echo "$downloadUrls" | grep -oE '/[^"]+')
 
-    if [[ $2 =~ 'LVideos' ]]; then
-        downloadUrls=$(echo "$downloadUrls" | grep '.mp4$')
-        extension=".mp4"
+        if [[ $2 =~ 'LVideos' ]]; then
+            downloadUrls=$(echo "$downloadUrls" | grep '.mp4$')
+            extension=".mp4"
+        else
+            downloadUrls=$(echo "$downloadUrls" | grep '.pdf$')
+            extension=".pdf"
+        fi
+        # echo "$downloadUrls"
+
+        # Converting the multi-line variable into a list
+        downloadUrlList=()
+        while IFS= read -r url; do
+            downloadUrlList+=("$url")
+        done <<<"$downloadUrls"
+
+        baseLink="https://ocw.mit.edu"
+
+        # the following part deals with downloads
+        index=1
+        mkdir -p "$2/"
+        if [ $? -eq 0 ]; then
+            echo "Directory '$2' created successfully."
+        else
+            echo "E: Failed to create directory '$2'."
+        fi
+        echo "How would you like the files to be downloded?"
+        echo "1. Serially (one after another)"
+        echo "2. Parallely (multiple files simultaneusly)"
+
+        correctFlag=0
+        while [ "$correctFlag" -eq 0 ]; do
+            read -rep "Input (1 or 2): " downloadOption
+            case "$downloadOption" in
+            "1")
+                correctFlag=1
+                # serial download
+                for url in "${downloadUrlList[@]}"; do
+                    filename=$(basename "$2")
+                    wget -q -O "./$2/$filename$index$extension" "$baseLink$url"
+                    ((index++))
+                done
+                ;;
+            "2")
+                correctFlag=1
+                # parallel download
+                for url in "${downloadUrlList[@]}"; do
+                    filename=$(basename "$2")
+                    wget -q -O "./$2/$filename$index$extension" "$baseLink$url" &
+                    ((index++))
+                done
+                wait
+                ;;
+            *) echo "E: The only valid inputs are 1 & 2" ;;
+            esac
+        done
     else
-        downloadUrls=$(echo "$downloadUrls" | grep '.pdf$')
-        extension=".pdf"
+        echo "E: Error $http_status, could not load $1"
     fi
-    # echo "$downloadUrls"
-
-    # Converting the multi-line variable into a list
-    downloadUrlList=()
-    while IFS= read -r url; do
-        downloadUrlList+=("$url")
-    done <<<"$downloadUrls"
-
-    baseLink="https://ocw.mit.edu"
-
-    # the following part deals with downloads
-    index=1
-    mkdir -p "$2/"
-    if [ $? -eq 0 ]; then
-        echo "Directory '$2' created successfully."
-    else
-        echo "E: Failed to create directory '$2'."
-    fi
-    echo "How would you like the files to be downloded?"
-    echo "1. Serially (one after another)"
-    echo "2. Parallely (multiple files simultaneusly)"
-
-    correctFlag=0
-    while [ "$correctFlag" -eq 0 ]; do
-        read -rep "Input (1 or 2): " downloadOption
-        case "$downloadOption" in
-        "1")
-            correctFlag=1
-            # serial download
-            for url in "${downloadUrlList[@]}"; do
-                filename=$(basename "$2")
-                wget -q -O "./$2/$filename$index$extension" "$baseLink$url"
-                ((index++))
-            done
-            ;;
-        "2")
-            correctFlag=1
-            # parallel download
-            for url in "${downloadUrlList[@]}"; do
-                filename=$(basename "$2")
-                wget -q -O "./$2/$filename$index$extension" "$baseLink$url" &
-                ((index++))
-            done
-            wait
-            ;;
-        *) echo "E: The only valid inputs are 1 & 2" ;;
-        esac
-    done
 }
 
 get_resources() {
@@ -241,7 +252,7 @@ fi
 if [ $# -gt 1 ]; then
     echo "E: More than one argument passed"
     echo "Usage: ocwd <link>"
-    exit
+    exit 1
 fi
 
 # trims the link
@@ -258,5 +269,8 @@ if [[ $link == "https://ocw.mit.edu/courses/"* ]]; then
         targetKeys=()
         get_options
         get_resources
+    else
+        echo "E: Error $http_status, could not parse website"
+        exit 1
     fi
 fi
