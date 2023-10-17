@@ -144,18 +144,42 @@ get_files() {
     baseLink="https://ocw.mit.edu"
 
     # the following part deals with downloads
-    # serial download
     index=1
     mkdir -p "$2/"
     if [ $? -eq 0 ]; then
         echo "Directory '$2' created successfully."
     else
-        echo "Failed to create directory '$2'."
+        echo "E: Failed to create directory '$2'."
     fi
-    for url in "${downloadUrlList[@]}"; do
-        filename=$(basename "$2")
-        wget -q -O "./$2/$filename$index$extension" "$baseLink$url"
-        ((index++))
+    echo "How would you like the files to be downloded?"
+    echo "1. Serially (one after another)"
+    echo "2. Parallely (multiple files simultaneusly)"
+
+    correctFlag=0
+    while [ "$correctFlag" -eq 0 ]; do
+        read -rep "Input (1 or 2): " downloadOption
+        case "$downloadOption" in
+        "1")
+            correctFlag=1
+            # serial download
+            for url in "${downloadUrlList[@]}"; do
+                filename=$(basename "$2")
+                wget -q -O "./$2/$filename$index$extension" "$baseLink$url"
+                ((index++))
+            done
+            ;;
+        "2")
+            correctFlag=1
+            # parallel download
+            for url in "${downloadUrlList[@]}"; do
+                filename=$(basename "$2")
+                wget -q -O "./$2/$filename$index$extension" "$baseLink$url" &
+                ((index++))
+            done
+            wait
+            ;;
+        *) echo "E: The only valid inputs are 1 & 2" ;;
+        esac
     done
 }
 
