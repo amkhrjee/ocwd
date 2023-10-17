@@ -1,5 +1,11 @@
 #!/usr/bin/bash
 
+#################################
+# Title: OCWD                   #
+# Author: Aniruddha Mukherjee   #
+# Last edited: 17 Oct 2023      #
+#################################
+
 # ANSI color codes
 RED='\033[0;31m'
 GREEN='\033[0;32m'
