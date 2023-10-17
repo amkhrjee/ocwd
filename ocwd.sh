@@ -148,7 +148,6 @@ get_files() {
             downloadUrls=$(echo "$downloadUrls" | grep '.pdf$')
             extension=".pdf"
         fi
-        # echo "$downloadUrls"
 
         # Converting the multi-line variable into a list
         downloadUrlList=()
@@ -169,7 +168,7 @@ get_files() {
         echo -e "${YELLOW}How would you like the files to be downloded?"
         echo -e "1. Serially (one after another)"
         echo -e "2. Parallely (multiple files simultaneously)${RESET}"
-
+        total_items=${#downloadUrlList[@]}
         correctFlag=0
         while [ "$correctFlag" -eq 0 ]; do
             read -rep "Input (1 or 2): " downloadOption
@@ -180,8 +179,22 @@ get_files() {
                 for url in "${downloadUrlList[@]}"; do
                     filename=$(basename "$2")
                     wget -q -O "./$2/$filename$index$extension" "$baseLink$url"
+                    percentage=$((index * 100 / total_items))
+                    bar_length=$((index * 50 / total_items))
+                    progress_bar="["
+                    for ((j = 0; j < bar_length; j++)); do
+                        progress_bar+="="
+                    done
+                    for ((j = bar_length; j < 50; j++)); do
+                        progress_bar+=" "
+                    done
+                    progress_bar+="]"
+
+                    # Print the progress bar and percentage
+                    printf "\rProgress: %3d%% %s" "$percentage" "$progress_bar"
                     ((index++))
                 done
+                printf "\n"
                 ;;
             "2")
                 correctFlag=1
