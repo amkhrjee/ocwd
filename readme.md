@@ -24,6 +24,8 @@ Paste the following to your terminal:
 
 This simply copies the `ocwd.sh` file to your `\usr\bin\` directory. Now you can use `ocwd` from any directory in your system.
 
+<hr>
+
 ### Using PowerShell
 ### Windows
 `ocwd` works with both [Windows PowerShell](https://learn.microsoft.com/en-us/powershell/scripting/windows-powershell/install/installing-windows-powershell?view=powershell-7.3) and the cross-platform [PowerShell-Core](https://learn.microsoft.com/en-us/powershell/scripting/overview?view=powershell-7.3). 
@@ -94,8 +96,6 @@ This should display information about the version of Windows PowerShell that you
 
 That's it! You have now installed Windows PowerShell on your system. You can start using Windows PowerShell by typing commands into the terminal window.
 </details>
-
-<hr>
 
 If you have PowerShell installed, we can proceed to install `ocwd`.
 
