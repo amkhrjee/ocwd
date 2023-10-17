@@ -15,7 +15,16 @@
 
 The resources are available under the creative commons license and MIT reserves all rights to the content. This tool simply scrapes the OCW website for resources and offers a simple and easy way for downloading any course resource for offline use.
 ## Installation Guide
+### Without using PowerShell
+#### Linux + macOS
+Paste the following to your terminal:
+```sh
+/bin/bash -c "$(sudo wget -O /usr/bin/ocwd https://raw.githubusercontent.com/amkhrjee/ocwd/main/ocwd.sh && sudo chmod +x ocwd)"
+```
 
+This simply copies the `ocwd.sh` file to your `\usr\bin\` directory. Now you can use `ocwd` from any directory in your system.
+
+### Using PowerShell
 ### Windows
 `ocwd` works with both [Windows PowerShell](https://learn.microsoft.com/en-us/powershell/scripting/windows-powershell/install/installing-windows-powershell?view=powershell-7.3) and the cross-platform [PowerShell-Core](https://learn.microsoft.com/en-us/powershell/scripting/overview?view=powershell-7.3). 
 
@@ -85,12 +94,6 @@ This should display information about the version of Windows PowerShell that you
 
 That's it! You have now installed Windows PowerShell on your system. You can start using Windows PowerShell by typing commands into the terminal window.
 </details>
-
-### Linux
-The cross-platform PowerShell-Core is required for this. The official and detailed installation guide can be found [here](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-linux?view=powershell-7.3). 
-
-### MacOS
-The detailed installation guide for PowerShell-Core is given [here](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-macos?view=powershell-7.3) by Microsoft.
 
 <hr>
 
