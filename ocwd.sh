@@ -126,10 +126,12 @@ get_files() {
     downloadUrls=$(echo "$downloadUrls" | grep -o '"[^"]\+"')
     downloadUrls=$(echo "$downloadUrls" | grep -oE '/[^"]+')
 
-    if [[ $2 == 'LVideos' ]]; then
+    if [[ $2 =~ 'LVideos' ]]; then
         downloadUrls=$(echo "$downloadUrls" | grep '.mp4$')
+        extension=".mp4"
     else
         downloadUrls=$(echo "$downloadUrls" | grep '.pdf$')
+        extension=".pdf"
     fi
     # echo "$downloadUrls"
 
@@ -139,6 +141,22 @@ get_files() {
         downloadUrlList+=("$url")
     done <<<"$downloadUrls"
 
+    baseLink="https://ocw.mit.edu"
+
+    # the following part deals with downloads
+    # serial download
+    index=1
+    mkdir -p "$2/"
+    if [ $? -eq 0 ]; then
+        echo "Directory '$2' created successfully."
+    else
+        echo "Failed to create directory '$2'."
+    fi
+    for url in "${downloadUrlList[@]}"; do
+        filename=$(basename "$2")
+        wget -q -O "./$2/$filename$index$extension" "$baseLink$url"
+        ((index++))
+    done
 }
 
 get_resources() {
