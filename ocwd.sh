@@ -1,26 +1,32 @@
 #!/usr/bin/bash
 
+# Define ANSI color codes
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+RESET='\033[0m'
+
 trim() {
     trimmed=$(awk '{$1=$1};1' <<<"$1")
     echo "$trimmed"
 }
 
 show_details() {
-    echo "::::::::::::::::::::::::::::::::"
-    echo "╰(*°▽°*)╯ Course Found"
-    echo ":::::::::::::::::::::::::::::::::::"
+    echo -e "${YELLOW}:::::::::::::::::::::::::::::::::::"
+    echo -e "╰(*°▽°*)╯ Course Details"
+    echo -e ":::::::::::::::::::::::::::::::::::${RESET}"
     # Title
     titleLine=$(echo "$1" | grep '<title>')
     titleLine=$(trim "$titleLine")
     titleLine=$(echo "$titleLine" | sed -n 's/.*<title>\(.*\)<\/title>.*/\1/p')
     title=$(awk -F "|" '{print $1}' <<<"$titleLine")
-    echo "- Title: $title"
+    echo -e "${GREEN}- Title: $title"
 
     # Instructor
     instructorLine=$(echo "$1" | grep -m 1 '<a class="course-info-instructor strip-link-offline"  href=".*">')
     instructorLine=$(trim "$instructorLine")
     instructorLine=$(echo "$instructorLine" | sed -n 's/.*<a[^>]*>\(.*\)<\/a>.*/\1/p')
-    echo "- Instructor: $instructorLine"
+    echo -e "- Instructor: $instructorLine"
 }
 
 show_additional_details() {
@@ -33,15 +39,15 @@ show_additional_details() {
     courseSem=$(trim "$courseSem")
     courseLevel=$(echo "$additionalDetails" | awk -F "|" '{print $3}')
     courseLevel=$(trim "$courseLevel")
-    echo "- ID: $courseId"
-    echo "- Semester: $courseSem"
-    echo "- Level: $courseLevel"
+    echo -e "- ID: $courseId"
+    echo -e "- Semester: $courseSem"
+    echo -e "- Level: $courseLevel${RESET}"
 }
 
 show_resources() {
-    echo "::::::::::::::::::::::::::::::::"
-    echo "╰(*°▽°*)╯ Resources Available"
-    echo "::::::::::::::::::::::::::::::::"
+    echo -e "${YELLOW}::::::::::::::::::::::::::::::::"
+    echo -e "╰(*°▽°*)╯ Available Resources"
+    echo -e "::::::::::::::::::::::::::::::::${RESET}"
     download="download"
     if [[ $1 =~ /$ ]]; then
         downloadPageLink="$1$download/"
@@ -57,27 +63,27 @@ show_resources() {
             if [[ "$downloadPageHtml" =~ $key ]]; then
                 resourceList["$index"]="$key"
                 ((index++))
-                echo "$index. $key"
+                echo -e "${GREEN}$index. $key${RESET}"
             fi
         done
     else
-        echo "E: Error $http_status, could not fetch reosources"
+        echo -e "${RED}E: Error $http_status, could not fetch reosources${RESET}"
         exit 1
     fi
 }
 
 get_options() {
-    echo "Enter the index of the desired resource for download"
-    echo "=>Use commas for multiple indices"
-    echo "=>Enter A for downloading all resources"
-    echo "=>Example: 1,2"
+    echo -e "${YELLOW}Enter the index of the desired resource for download"
+    echo -e "=>Use commas for multiple indices"
+    echo -e "=>Enter A for downloading all resources"
+    echo -e "=>Example: 1,2${RESET}"
 
     correctInputFlag=0
     while [ "$correctInputFlag" -ne 1 ]; do
         read -rep "Input: " option
 
         case ${#option} in
-        "0") echo "Input cannot be empty!" ;;
+        "0") echo -e "${RED}E: Input cannot be empty!${RESET}" ;;
         "1")
             if [[ $option == 'a' || $option == 'A' ]]; then
                 index=0
@@ -92,11 +98,11 @@ get_options() {
                     targetKeys["0"]="${resourceList["$resourceIndex"]}"
                     correctInputFlag=1
                 else
-                    echo "E: Invalid Index"
+                    echo -e "${RED}E: Invalid Index${RESET}"
                 fi
             fi
             ;;
-        2) echo "E: Invalid Index" ;;
+        2) echo -e "${RED}E: Invalid Index${RESET}" ;;
         *)
             if [[ $option == 'All' || $option == 'all' ]]; then
                 index=0
@@ -116,7 +122,7 @@ get_options() {
                         correctInputFlag=1
                     else
                         correctInputFlag=0
-                        echo "E: Invalid index: $element"
+                        echo -e "${RED}E: Invalid index: $element${RESET}"
                         break
                     fi
                 done
@@ -155,13 +161,13 @@ get_files() {
         index=1
         mkdir -p "$2/"
         if [ $? -eq 0 ]; then
-            echo "Directory '$2' created successfully."
+            echo -e "${GREEN}Directory '$2' created successfully.${RESET}"
         else
-            echo "E: Failed to create directory '$2'."
+            echo -e "${RED}E: Failed to create directory '$2'.${RESET}"
         fi
-        echo "How would you like the files to be downloded?"
-        echo "1. Serially (one after another)"
-        echo "2. Parallely (multiple files simultaneusly)"
+        echo -e "${YELLOW}How would you like the files to be downloded?"
+        echo -e "1. Serially (one after another)"
+        echo -e "2. Parallely (multiple files simultaneously)${RESET}"
 
         correctFlag=0
         while [ "$correctFlag" -eq 0 ]; do
@@ -186,11 +192,11 @@ get_files() {
                 done
                 wait
                 ;;
-            *) echo "E: The only valid inputs are 1 & 2" ;;
+            *) echo -e "${RED}E: The only valid inputs are 1 & 2${RESET}" ;;
             esac
         done
     else
-        echo "E: Error $http_status, could not load $1"
+        echo -e "${RED}E: Error $http_status, could not load $1${RESET}"
     fi
 }
 
@@ -199,9 +205,9 @@ get_resources() {
         link="$link/"
     fi
     # Take directory path for the download
-    echo "Enter directory name or path (will be created if doesn't exist)"
-    echo "=>Example: IntroToAlgorithms"
-    echo "=>Example: courses/IntroToAlgorithms"
+    echo -e "${YELLOW}Enter directory name or path (will be created if doesn't exist)"
+    echo -e "=>Example: IntroToAlgorithms"
+    echo -e "=>Example: courses/IntroToAlgorithms${RESET}"
     read -rep "Input: " inputPath
     if [[ ! $inputPath =~ /$ ]]; then
         inputPath="$inputPath/"
@@ -213,24 +219,28 @@ get_resources() {
             augmentLink="resources/lecture-videos/"
             directoryTitle="LVideos"
             get_files "$link$augmentLink" "$inputPath$directoryTitle"
+            echo "✅ Lecture Videos downloads finished!"
             ;;
         'Assignments')
             echo "✨ Fetching Assignments"
             augmentLink="resources/assignments/"
             directoryTitle="Assignments"
             get_files "$link$augmentLink" "$inputPath$directoryTitle"
+            echo "✅ Assignments downloads finished!"
             ;;
         'Exams')
             echo "✨ Fetching Exams"
             augmentLink="resources/exams/"
             directoryTitle="Exams"
             get_files "$link$augmentLink" "$inputPath$directoryTitle"
+            echo "✅ Exams downloads finished!"
             ;;
         'Lecture Notes')
             echo "✨ Fetching Lecture Notes"
             augmentLink="resources/lecture-notes/"
             directoryTitle="LNotes"
             get_files "$link$augmentLink" "$inputPath$directoryTitle"
+            echo "✅ Lecture Notes downloads finished!"
             ;;
         *) echo "E: Invalid type of resource" ;;
         esac
