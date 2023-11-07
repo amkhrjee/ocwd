@@ -3,7 +3,7 @@
 #################################
 # Title: OCWD                   #
 # Author: Aniruddha Mukherjee   #
-# Last edited: 17 Oct 2023      #
+# Last edited: 8 Nov 2023       #
 #################################
 
 # ANSI color codes
@@ -262,7 +262,7 @@ get_resources() {
             get_files "$link$augmentLink" "$inputPath$directoryTitle"
             echo "✅ Lecture Notes downloads finished!"
             ;;
-        *) echo "E: Invalid type of resource" ;;
+        *) echo -e "${RED}E: Invalid type of resource${RESET}" ;;
         esac
     done
 }
@@ -280,7 +280,7 @@ if [ $# -eq 1 ]; then
     link="$1"
 fi
 if [ $# -gt 1 ]; then
-    echo "E: More than one argument passed"
+    echo -e "${RED}E: More than one argument passed${RESET}"
     echo "Usage: ocwd <link>"
     exit 1
 fi
@@ -300,7 +300,9 @@ if [[ $link == "https://ocw.mit.edu/courses/"* ]]; then
         get_options
         get_resources
     else
-        echo "E: Error $http_status, could not parse website"
+        echo -e "${RED}E: Error $http_status, could not parse website${RESET}"
         exit 1
     fi
+else
+    echo -e "${RED}E: Please enter a valid MIT OCW link${RESET}"
 fi
