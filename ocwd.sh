@@ -305,4 +305,5 @@ if [[ $link == "https://ocw.mit.edu/courses/"* ]]; then
     fi
 else
     echo -e "${RED}E: Please enter a valid MIT OCW link${RESET}"
+    exit 1
 fi
