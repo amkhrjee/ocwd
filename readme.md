@@ -19,7 +19,7 @@ The resources are available under the creative commons license and MIT reserves 
 #### 🐧 Linux + 🍎 macOS
 Paste the following to your terminal:
 ```sh
-/bin/bash -c "$(sudo wget -O /usr/local/bin/ocwd https://raw.githubusercontent.com/amkhrjee/ocwd/main/ocwd.sh && sudo chmod +x /usr/local/bin/ocwd)"
+/bin/bash -c "$(sudo wget -O /usr/local/bin/ocwd https://raw.githubusercontent.com/amkhrjee/ocwd/main/ocwd.sh && sudo chmod +x /usr/local/bin/ocwd.sh)"
 ```
 
 This simply copies the `ocwd.sh` file to your `/usr/local/bin/` directory. Now you can use `ocwd` from any directory in your system.
