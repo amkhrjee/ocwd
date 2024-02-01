@@ -270,9 +270,10 @@ get_resources() {
 # Starting point
 
 if [ $# -eq 0 ]; then
-    echo "ocwd Copyright (C) 2023 Aniruddha Mukherjee"
+    echo "ocwd Copyright (C) 2024 Aniruddha Mukherjee"
     echo "This program comes with ABSOLUTELY NO WARRANTY"
-    echo "This is free software, and you are welcome to redistribute it under certain conditions"
+    echo "This is free software, and you are welcome to"
+    echo "redistribute it under certain conditions."
     echo ""
     read -rep "Please enter the link to course homepage: " link
 fi
