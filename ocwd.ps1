@@ -440,9 +440,10 @@ function Import-Resoruces($userResponse) {
 # Starting point
 
 if ($link.Length -eq 0 ) {
-    Write-Host "ocwd Copyright (C) 2023 Aniruddha Mukherjee"
+    Write-Host "ocwd Copyright (C) 2024 Aniruddha Mukherjee"
     Write-Host "This program comes with ABSOLUTELY NO WARRANTY"
-    Write-Host "This is free software, and you are welcome to redistribute it under certain conditions"
+    Write-Host "This is free software, and you are welcome to"
+    Write-Host "redistribute it under certain conditions."
     Write-Host " "
     $link = Read-Host "Enter the URL to course homepage"
 }
