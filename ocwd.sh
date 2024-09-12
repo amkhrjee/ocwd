@@ -3,7 +3,7 @@
 #################################
 # Title: OCWD                   #
 # Author: Aniruddha Mukherjee   #
-# Last edited: 8 Nov 2023       #
+# Last edited: 12 Sept. 2024    #
 #################################
 
 # ANSI color codes
@@ -184,7 +184,13 @@ get_files() {
                 # serial download
                 for url in "${downloadUrlList[@]}"; do
                     filename=$(basename "$2")
-                    wget -q -O "./$2/$filename$index$extension" "$baseLink$url"
+
+                    if [[ $2 =~ 'LVideos' ]]; then
+                        url="${url:2}"
+                        wget -q -L -O"./$2/$filename$index$extension" "https://$url"
+                    else
+                        wget -q -O "./$2/$filename$index$extension" "$baseLink$url"
+                    fi
                     percentage=$((index * 100 / total_items))
                     bar_length=$((index * 50 / total_items))
                     progress_bar="["
@@ -207,7 +213,12 @@ get_files() {
                 # parallel download
                 for url in "${downloadUrlList[@]}"; do
                     filename=$(basename "$2")
-                    wget -q -O "./$2/$filename$index$extension" "$baseLink$url" &
+                    if [[ $2 =~ 'LVideos' ]]; then
+                        url="${url:2}"
+                        wget -q -L -O"./$2/$filename$index$extension" "https://$url" &
+                    else
+                        wget -q -O "./$2/$filename$index$extension" "$baseLink$url" &
+                    fi
                     ((index++))
                 done
                 wait
@@ -270,7 +281,7 @@ get_resources() {
 # Starting point
 
 if [ $# -eq 0 ]; then
-    echo "ocwd Copyright (C) 2024 Aniruddha Mukherjee"
+    echo "ocwd Copyright (C) 2024 Aniruddha Mukherjee<amkhrjee@gmail.com>"
     echo "This program comes with ABSOLUTELY NO WARRANTY"
     echo "This is free software, and you are welcome to"
     echo "redistribute it under certain conditions."
