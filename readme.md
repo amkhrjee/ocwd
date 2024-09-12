@@ -1,6 +1,6 @@
 <p align="center">
     <h1 align="center">ocwd</h1>
-    <p align = "center">Bulk download courses at a press of a button 🗃️</p>
+    <p align = "center">Bulk download courses at the press of a button 📥</p>
 </p>
 <p align="center" >
    <img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/amkhrjee/ocwd">
