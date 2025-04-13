@@ -3,7 +3,7 @@ import re
 import requests
 import subprocess  # For Invoke-Item equivalent
 from concurrent.futures import ThreadPoolExecutor
-import tqdm  # Import tqdm for progress bar
+from tqdm import tqdm
 
 
 
