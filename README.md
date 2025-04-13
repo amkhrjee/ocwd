@@ -1,7 +1,11 @@
 <p align="center">
     <h1 align = "center">ocwpy</h1>
-    <p align = "center">Python adaptation of the MIT OCW BULK downloader made by [amkhrjee](https://github.com/amkhrjee/).</p>
+    <p align = "center">Python adaptation of the MIT OCW BULK downloader made by <a href="https://github.com/amkhrjee">amkhrjee</a>
+.</p> 
+<p align="center" >
+   <img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/devRIKU/ocwd">
 </p>
+
 
 ## What does `ocwpy` do?
 `ocwpy` is a command line utility that downloads resources at bulk from any [MIT OCW](https://ocw.mit.edu/) course to any storage path provided by you, with just one key press! 
