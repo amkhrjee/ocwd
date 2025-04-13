@@ -1,6 +1,6 @@
 <p align="center">
     <h1 align = "center">ocwpy</h1>
-    <p align = "center">Python adaptation of the MIT OCW BULK downloader made by [amkhrjee](https://github.com/amkhrjee).</p>
+    <p align = "center">Python adaptation of the MIT OCW BULK downloader made by [amkhrjee](https://github.com/amkhrjee/).</p>
 </p>
 
 ## What does `ocwpy` do?
