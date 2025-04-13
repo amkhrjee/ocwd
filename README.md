@@ -10,6 +10,7 @@ The resources are available under the creative commons license and MIT reserves 
 ## Installation Guide
 #### 🐧 Linux + 🍎 macOS + 🪟 Windows
 Simply download the latest release from the releases tab or
+
 by cloning this repository throught git.
 ```git
 git clone https://github.com/devRIKU/ocwd
@@ -27,3 +28,8 @@ python ocwd.py
 ```
 or Right-Click -> Open with -> Python 3.XX
 ## Demo
+https://github.com/user-attachments/assets/6bb17dbc-e148-4b4d-9eae-15e482ff68f2
+
+
+
+
