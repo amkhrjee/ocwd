@@ -12,18 +12,18 @@ The resources are available under the creative commons license and MIT reserves 
 Simply download the latest release from the releases tab or
 by cloning this repository throught git.
 ```git
-    git clone https://github.com/devRIKU/ocwd
+git clone https://github.com/devRIKU/ocwd
 ```
 ## Usage
 🐧 Linux + 🍎 macOS 
 In the extracted folder or git directory, run -
 ```python
-    python3 ocwd.py
+python3 ocwd.py
 ```
 🪟 Windows 
 In the extracted folder or git directory, run -
 ```python
-    python ocwd.py
+python ocwd.py
 ```
 or Right-Click -> Open with -> Python 3.XX
 ## Demo
