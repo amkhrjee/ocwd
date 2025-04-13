@@ -4,6 +4,7 @@
 .</p> 
 <p align="center" >
    <img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/devRIKU/ocwd">
+      <img alt="Supported Platforms" src="https://img.shields.io/powershellgallery/p/ocwd?color=white">
 </p>
 
 
