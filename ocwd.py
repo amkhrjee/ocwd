@@ -6,6 +6,7 @@ from concurrent.futures import ThreadPoolExecutor
 import tqdm  # Import tqdm for progress bar
 
 
+
 # ANSI escape codes for colored text
 RED = '\033[91m'
 GREEN = '\033[92m'
@@ -25,12 +26,18 @@ def show_exception(msg):
     print(f"{RED}{msg}{RESET}")
 
 def get_details(html_content):
+    # Define patterns dictionary with instructorPattern
+    patterns = {
+        'instructorPattern': r'<span class="instructor-name">(?P<instructor>.*?)</span>'
+    }
+    
     title_match = re.search(r'<title>(.*?)</title>', html_content)
     title_name = title_match.group(1).split('|')[0] if title_match else "Title not found"
 
-    instructor_match = re.search(r'<a class="course-info-instructor strip-link-offline"  href=".*?>(.*?)</a>', html_content)
-    instructor_name = instructor_match.group(1) if instructor_match else "Instructor not found"
-
+    if re.search(patterns['instructorPattern'], html_content):
+        instructor_name = re.search(patterns['instructorPattern'], html_content).group('instructor')
+    else:
+        instructor_name = "Instructor not found"
     return title_name, instructor_name
 
 def show_details(details_list):
