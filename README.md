@@ -3,8 +3,8 @@
     <p align = "center">Python adaptation of the MIT OCW BULK downloader made by [@amkhrjee](https://github.com/amkhrjee).</p>
 </p>
 
-## What does `ocwd` do?
-`ocwd` is a command line utility that downloads resources at bulk from any [MIT OCW](https://ocw.mit.edu/) course to any storage path provided by you, with just one key press! 
+## What does `ocwpy` do?
+`ocwpy` is a command line utility that downloads resources at bulk from any [MIT OCW](https://ocw.mit.edu/) course to any storage path provided by you, with just one key press! 
 
 The resources are available under the creative commons license and MIT reserves all rights to the content. This tool simply scrapes the OCW website for resources and offers a simple and easy way for downloading any course resource for offline use.
 ## Installation Guide
