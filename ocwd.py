@@ -1,3 +1,6 @@
+# Author: Sanniva Chatterjee <https://github.com/devRIKU>
+# Last edited: 13th April 2025
+
 import os
 import re
 import requests
