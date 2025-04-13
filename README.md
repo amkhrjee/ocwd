@@ -20,7 +20,7 @@ The resources are available under the creative commons license and MIT reserves 
 
 ### Without using PowerShell
 
-#### 🐧 Linux + 🍎 macOS
+#### Linux & macOS
 
 Paste the following to your terminal:
 
@@ -29,6 +29,14 @@ Paste the following to your terminal:
 ```
 
 This simply copies the `ocwd.sh` file to your `/usr/local/bin/` directory. Now you can use `ocwd` from any directory in your system.
+
+#### Using Python (with [`uv`](https://docs.astral.sh/uv/))
+
+Run the following command:
+
+```
+uv run --with tqdm --with requests https://raw.githubusercontent.com/amkhrjee/ocwd/refs/heads/main/ocwd.py
+```
 
 <hr>
 
