@@ -26,7 +26,6 @@ def show_exception(msg):
     print(f"{RED}{msg}{RESET}")
 
 def get_details(html_content):
-    # Define patterns dictionary with instructorPattern
     patterns = {
         'instructorPattern': r'<span class="instructor-name">(?P<instructor>.*?)</span>'
     }
